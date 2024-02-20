@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const db = require('./Config/connection')
-const router = require("./Routes/router");
+const indexRouter = require("./Routes/router");
 require("dotenv").config();
 const PORT = process.env.port;
 const bodyParser = require('body-parser');
@@ -17,7 +17,7 @@ app.use(cors({
     methods: ['GET', 'POST', 'DELETE'],
     credentials: true
 }));
-app.use('/', router);
+app.use('/', indexRouter);
 
 // connection
 db.connect((err) => {
