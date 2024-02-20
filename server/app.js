@@ -17,7 +17,7 @@ app.use(cors({
     methods: ['GET', 'POST', 'DELETE'],
     credentials: true
 }));
-app.use(router);
+app.use('/', router);
 
 // connection
 db.connect((err) => {
