@@ -13,7 +13,7 @@ app.use(express.json({ limit: '5mb' }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(cors({
-    origin: ['http://localhost:3000'],
+    origin: ['https://rimshad.tech'],
     methods: ['GET', 'POST', 'DELETE'],
     credentials: true
 }));
