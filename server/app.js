@@ -22,7 +22,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 //     credentials: true
 // }));
 const corsOptions = {
-    origin: 'https://rimshad.tech',
+    origin: '*',
     methods: ['GET', 'POST', 'DELETE'],
     credentials: true,
     optionsSuccessStatus: 204,
