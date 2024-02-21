@@ -9,14 +9,26 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 
 // middleware
+app.use(logger('dev'));
 app.use(express.json({ limit: '5mb' }));
 app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(cors({
-    origin: ['https://rimshad.tech'],
+app.use(express.static(path.join(__dirname, 'public')));
+
+// app.use(cors({
+//     origin: ['https://rimshad.tech'],
+//     methods: ['GET', 'POST', 'DELETE'],
+//     credentials: true
+// }));
+const corsOptions = {
+    origin: 'https://rimshad.tech',
     methods: ['GET', 'POST', 'DELETE'],
-    credentials: true
-}));
+    credentials: true,
+    optionsSuccessStatus: 204,
+    allowedHeaders: ['Content-Type', 'Authorization'],
+};
+app.use(cors(corsOptions));
 // app.use('/', indexRouter);
 
 app.get('/', (req, res) => {
