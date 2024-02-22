@@ -1,20 +1,19 @@
 import axios from "axios";
 
-export const commonrequest = async(methods,url,body,header)=>{
+export const commonrequest = async (methods, body, header) => {
     let config = {
-        method:methods,
-        url,
-        headers:header ? header 
-        :{
-            "Content-Type":"application/json"
-        },
-        data:body
+        method: methods,
+        headers: header ? header
+            : {
+                "Content-Type": "application/json"
+            },
+        data: body
     }
 
     // axios instance
-    return axios(config).then((data)=>{
+    return axios(config).then((data) => {
         return data
-    }).catch((error)=>{
+    }).catch((error) => {
         return error
     })
 }
