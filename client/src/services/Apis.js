@@ -1,13 +1,12 @@
 import { commonrequest } from "./ApiCall";
-import axios from 'axios';
 
 export const registerfunction = async (data) => {
     return await commonrequest("POST", `/user/register`, data)
 }
 
-export const sentOtpFunction = async (data) => {
-    return await axios.post(`/logincheck`, data)
-}
+// export const sentOtpFunction = async (data) => {
+//     return await axios.post(`/logincheck`, data)
+// }
 // export const sentOtpFunction = async (data) => {
 //     return await commonrequest("POST", `/logincheck`, data)
 // }

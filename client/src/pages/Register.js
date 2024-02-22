@@ -3,6 +3,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { registerfunction, sentOtpFunction } from '../services/Apis';
 import { NavLink, useNavigate } from 'react-router-dom';
 import '../styles/mix.css';
+import axios from 'axios';
 
 const Register = () => {
   const [passhow, setPassShow] = useState(false);
@@ -63,12 +64,14 @@ const Register = () => {
         email: email,
       };
 
-      const response = await sentOtpFunction(data);
-      if (response.status === 200) {
-        toast.success('otp send successfully');
-      } else {
-        toast.error(response.response.data.error);
-      }
+      axios.post(`/logincheck`, data).then((response) => {
+
+        if (response.status === 200) {
+          toast.success('otp send successfully');
+        } else {
+          toast.error(response.response.data.error);
+        }
+      })
     }
   };
 
