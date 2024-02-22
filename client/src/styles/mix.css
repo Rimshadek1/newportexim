@@ -175,4 +175,10 @@ form .btnload {
         margin-left: 10%;
         margin-top: 10%;
     }
+
+    .form_heading {
+        display: flex;
+        flex-direction: column;
+        margin-left: 30px;
+    }
 }
