@@ -19,8 +19,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 const corsOptions = {
     origin: 'https://rimshad.tech',
-    methods: ['GET', 'POST', 'DELETE'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     credentials: true,
+    allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept']
 };
 app.use(cors(corsOptions));
 app.use('/', indexRouter);

@@ -12,6 +12,6 @@ export const commonrequest = async (method, url, data, headers) => {
         const response = await axios(config);
         return response.data;
     } catch (error) {
-        throw error; // Re-throw the error for the caller to handle
+        throw error;
     }
 };
