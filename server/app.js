@@ -21,8 +21,8 @@ const corsOptions = {
     origin: 'https://rimshad.tech',
     methods: ['GET', 'POST', 'DELETE'],
     credentials: true,
-    optionsSuccessStatus: 204,
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    // optionsSuccessStatus: 204,
+    // allowedHeaders: ['Content-Type', 'Authorization'],
 };
 app.use(cors(corsOptions));
 app.use('/', indexRouter);
