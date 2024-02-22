@@ -35,8 +35,7 @@ import Addprofit from './pages/Admin/Addprofit/Addprofit';
 
 function App() {
   axios.defaults.withCredentials = true;
-  const { id } = useContext(UserContext)
-  console.log(id);
+  axios.defaults.baseURL = process.env.BACKEND_URL;
   return (
     <>
       <UserContextProvider>
