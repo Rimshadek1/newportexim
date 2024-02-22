@@ -1,19 +1,21 @@
-import axios from "axios";
+import axios from 'axios';
 
-export const commonrequest = async (methods, body, header) => {
+export const commonrequest = async (method, url, data) => {
     try {
-        let config = {
-            method: methods,
-            headers: header ? header : { "Content-Type": "application/json" },
-            data: body
-        };
-
-        const response = await axios(config);
+        const response = await axios({
+            method,
+            url,
+            data
+            // You can add headers if needed
+        });
         return response.data;
     } catch (error) {
-        throw error;
+        // Handle errors here
+        console.error('Request failed:', error);
+        throw error; // Rethrow the error to be caught by the caller
     }
 };
+
 // import axios from "axios";
 
 // export const commonrequest = async (methods, body, header) => {
