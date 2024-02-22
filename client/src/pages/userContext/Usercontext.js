@@ -2,8 +2,6 @@ import axios from "axios";
 import { createContext, useEffect, useState } from "react";
 import PropTypes from 'prop-types';
 import { useNavigate } from "react-router-dom";
-import { BACKEND_URL } from "../../services/helper";
-
 export const UserContext = createContext({});
 
 export function UserContextProvider({ children }) {
@@ -13,7 +11,7 @@ export function UserContextProvider({ children }) {
     const navigate = useNavigate();
 
     useEffect(() => {
-        axios.get(`${BACKEND_URL}/profile`, {
+        axios.get(`/profile`, {
             headers: {
                 Authorization: `Bearer ${authToken}`,
             },
