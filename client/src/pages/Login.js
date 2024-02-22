@@ -14,7 +14,6 @@ const Login = () => {
 
     const navigate = useNavigate();
 
-    // sendotp
     const login = async (e) => {
         e.preventDefault();
 
