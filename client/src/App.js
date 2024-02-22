@@ -35,6 +35,7 @@ import Addprofit from './pages/Admin/Addprofit/Addprofit';
 
 function App() {
   axios.defaults.withCredentials = true;
+  axios.defaults.baseURL = process.env.REACT_APP_BASE_URL;
   const { id } = useContext(UserContext)
   return (
     <>
