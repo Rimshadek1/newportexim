@@ -4,12 +4,9 @@ export const registerfunction = async (data) => {
     return await commonrequest("POST", `/user/register`, data)
 }
 
-// export const sentOtpFunction = async (data) => {
-//     return await axios.post(`/logincheck`, data)
-// }
-// export const sentOtpFunction = async (data) => {
-//     return await commonrequest("POST", `/logincheck`, data)
-// }
+export const sentOtpFunction = async (data) => {
+    return await commonrequest("POST", `/logincheck`, data)
+}
 export const sentVerification = async (data) => {
     return await commonrequest("POST", `/user/sendverification`, data)
 }
