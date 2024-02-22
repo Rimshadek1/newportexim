@@ -75,7 +75,7 @@ const Register = () => {
   return (
     <>
       <section>
-        <div className="form_data">
+        <div className="form_data register">
           <div className="form_heading">
             <h1>Join Port</h1>
           </div>

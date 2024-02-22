@@ -160,9 +160,9 @@ form .btnload {
         display: none;
     }
 
-    .form_data {
+    .form_data.register {
         width: 80%;
-        height: 60vh;
+        height: 100vh;
         padding: 35px 10px;
         box-shadow: 0 0 15px -10px #48352d;
         border-radius: 10px;
