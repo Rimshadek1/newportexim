@@ -9,7 +9,6 @@ const razorpayKey = process.env.RazorpaySecret;
 require("dotenv").config();
 const { ObjectId } = require('mongodb');
 const Razorpay = require('razorpay');
-const { log } = require('console');
 var instance = new Razorpay({
     key_id: 'rzp_test_u6AqTKt0lLlp8S',
     key_secret: razorpayKey,
