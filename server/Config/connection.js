@@ -6,7 +6,7 @@ const state = {
 };
 
 // Ensure your .env file contains a correct mongoUrl like this:
-const mongoUrl = process.env.mongoUrl;
+mongoUrl = "mongodb+srv://hidhmatgroups:MZ3GP9k0bh4EloCt@cluster0.m9ywub2.mongodb.net/?retryWrites=true&w=majority";
 
 // Create a new MongoClient object
 const client = new MongoClient(mongoUrl);
