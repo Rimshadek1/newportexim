@@ -173,13 +173,17 @@ exports.userOtpSend = async (req, res) => {
 };
 
 exports.userLogin = async (req, res) => {
-    const { email, password } = req.body;
-    if (!password || !email) {
-        res.status(400).json({ error: "Please Enter Your password and email" });
-        return;
-    }
-
     try {
+        // Check if the MongoDB connection is ready
+        if (!db.isConnected()) {
+            return res.status(500).json({ error: 'MongoDB connection is not ready' });
+        }
+
+        const { email, password } = req.body;
+        if (!password || !email) {
+            return res.status(400).json({ error: 'Please enter your password and email' });
+        }
+
         const preuser = await db.get().collection(collection.userCollection).findOne({ email: email });
 
         if (preuser) {
@@ -187,29 +191,33 @@ exports.userLogin = async (req, res) => {
             const passwordMatch = await bcrypt.compare(password, preuser.password);
 
             if (passwordMatch) {
-                jwt.sign({
-                    email: preuser.email,
-                    id: preuser._id,
-                    role: preuser.role,
-                }, jwtsecret, {}, (err, token) => {
-                    if (err) {
-                        console.error(err);
-                        res.status(500).json({ error: "Error generating token" });
-                        return;
-                    }
-                    res.cookie('token', token, { sameSite: 'none', secure: true });
+                jwt.sign(
+                    {
+                        email: preuser.email,
+                        id: preuser._id,
+                        role: preuser.role,
+                    },
+                    jwtsecret,
+                    {},
+                    (err, token) => {
+                        if (err) {
+                            console.error(err);
+                            return res.status(500).json({ error: 'Error generating token' });
+                        }
+                        res.cookie('token', token, { sameSite: 'none', secure: true });
 
-                    res.status(200).json({ message: "User Login Successfully Done", token, role: preuser.role });
-                });
+                        return res.status(200).json({ message: 'User login successful', token, role: preuser.role });
+                    }
+                );
             } else {
-                res.status(400).json({ error: "Invalid Password" });
+                return res.status(400).json({ error: 'Invalid password' });
             }
         } else {
-            res.status(400).json({ error: "User not found" });
+            return res.status(400).json({ error: 'User not found' });
         }
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: "Server Error", error });
+        return res.status(500).json({ error: 'Server error', error });
     }
 };
 

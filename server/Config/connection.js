@@ -1,35 +1,33 @@
-const { MongoClient } = require("mongodb");
-require("dotenv").config();
+const { MongoClient } = require('mongodb');
+require('dotenv').config();
 
 const state = {
     db: null,
+    isConnected: false,
 };
 
-// Ensure your .env file contains a correct mongoUrl like this:
-mongoUrl = "mongodb+srv://hidhmatgroups:MZ3GP9k0bh4EloCt@cluster0.m9ywub2.mongodb.net/?retryWrites=true&w=majority";
+const mongoUrl = process.env.mongoUrl;
 
-// Create a new MongoClient object
-const client = new MongoClient(mongoUrl);
+const client = new MongoClient(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true });
 
-// Function to establish a MongoDB connection
-const connect = async (cb) => {
+const connect = async () => {
     try {
         await client.connect();
-        const db = client.db("Stake");
-
+        const db = client.db('Stake');
         state.db = db;
-        cb();
+        state.isConnected = true;
+        console.log('Connected to MongoDB');
     } catch (err) {
-        console.error("Error connecting to MongoDB:", err);
-        cb(err);
+        console.error('Error connecting to MongoDB:', err);
     }
 };
 
-// Function to get the database instance
 const get = () => state.db;
 
-// Export functions
+const isConnected = () => state.isConnected;
+
 module.exports = {
     connect,
     get,
+    isConnected,
 };
