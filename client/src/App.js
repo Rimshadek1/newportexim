@@ -22,8 +22,7 @@ import Propertiesoverview from './pages/propertiesview/Propertiesoverview';
 import Verificaton from './pages/Verification/Verificaton';
 import Admindash from './pages/Admin/Admindash';
 import axios from 'axios';
-import { UserContext, UserContextProvider } from './pages/userContext/Usercontext';
-import { useContext } from 'react';
+import { UserContextProvider } from './pages/userContext/Usercontext';
 import Addtrade from './pages/Admin/Addtrade/Addtrade';
 import Edittrade from './pages/Admin/Addtrade/Edittrade';
 import DepositPage from './Components/cart/wallet/DepositPage';
@@ -36,8 +35,7 @@ import Addprofit from './pages/Admin/Addprofit/Addprofit';
 function App() {
   axios.defaults.withCredentials = true;
   axios.defaults.baseURL = process.env.REACT_APP_BASE_URL;
-  // axios.defaults.baseURL = 'http://localhost:4002';
-  const { id } = useContext(UserContext)
+  // axios.defaults.baseURL = 'http://localhost:4002'; 
   return (
     <>
       <UserContextProvider>

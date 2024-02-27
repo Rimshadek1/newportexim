@@ -15,14 +15,13 @@ const client = new MongoClient(mongoUrl);
 const connect = async (cb) => {
     try {
         await client.connect();
-        const db = client.db("Stake"); // Make sure the database name matches your config
+        const db = client.db("Stake");
 
-        // Set up database instance in the state
         state.db = db;
-        cb(); // Callback after successful connection
+        cb();
     } catch (err) {
         console.error("Error connecting to MongoDB:", err);
-        cb(err); // Pass error to callback
+        cb(err);
     }
 };
 
