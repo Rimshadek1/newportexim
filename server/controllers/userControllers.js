@@ -620,6 +620,10 @@ exports.withdrawRequest = async (req, res) => {
 exports.userTransactions = async (req, res) => {
     try {
         const token = req.cookies.token;
+        if (!token) {
+            return res.status(400).json({ error: 'JWT token is not present' });
+        }
+
         jwt.verify(token, jwtsecret, async (err, decoded) => {
             if (err) {
                 throw err;
@@ -654,6 +658,7 @@ exports.userTransactions = async (req, res) => {
         res.status(500).json({ status: 'Internal server error' });
     }
 };
+
 
 exports.purchase = async (req, res) => {
     try {

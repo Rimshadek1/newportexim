@@ -11,18 +11,43 @@ const Register = () => {
     fname: '',
     email: '',
     password: '',
-    otp: '', // Add 'otp' field to the state
+    otp: '',
   });
 
   const navigate = useNavigate();
 
-  // setinputvalue
   const handleChange = (e) => {
     const { name, value } = e.target;
     setInputdata({ ...inputdata, [name]: value });
   };
+  const sendOtp = async (e) => {
+    e.preventDefault();
 
-  // register data
+    const { email } = inputdata;
+
+    if (email === '') {
+      toast.error('Enter Your Email !');
+    } else if (!email.includes('@')) {
+      toast.error('Enter Valid Email !');
+    } else {
+      try {
+        const response = await sentOtpFunction(email);
+        if (response.status === 200 && response.data.message === 'Email sent Successfully') {
+          toast.success('OTP sent successfully');
+        } else if (response.status === 400) {
+          toast.error('Email already registered');
+        } else {
+          toast.error('Otp not send');
+        }
+      } catch (error) {
+        console.error('Error sending OTP:', error);
+        toast.error('Failed to send OTP');
+      }
+    }
+  };
+
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { fname, email, password } = inputdata;
@@ -38,36 +63,25 @@ const Register = () => {
     } else if (password.length < 6) {
       toast.error('Password length minimum 6 characters');
     } else {
-      const response = await registerfunction(inputdata);
-      if (response.status === 200) {
-        setInputdata({ ...inputdata, fname: '', email: '', password: '', otp: '' });
-        navigate('/');
-      } else {
-        toast.error(response.response.data.error);
+      try {
+        const response = await registerfunction(inputdata);
+        if (response && response.status === 200) {
+          setInputdata({ ...inputdata, fname: '', email: '', password: '', otp: '' });
+          navigate('/');
+        } else {
+          toast.error('Failed to register user');
+        }
+      } catch (error) {
+        console.error('Error registering user:', error);
+        toast.error('An error occurred while registering user');
       }
     }
   };
 
-  // sendotp
-  const sendOtp = async (e) => {
-    e.preventDefault();
 
-    const { email } = inputdata;
 
-    if (email === '') {
-      toast.error('Enter Your Email !');
-    } else if (!email.includes('@')) {
-      toast.error('Enter Valid Email !');
-    } else {
 
-      const response = await sentOtpFunction(email);
-      if (response.status === 200) {
-        toast.success('otp send successfully');
-      } else {
-        toast.error(response.response.data.error);
-      }
-    }
-  };
+
 
   return (
     <>
@@ -85,7 +99,6 @@ const Register = () => {
               <label htmlFor="email">Email <span className='text-danger'>*</span></label>
               <div className='two'>
                 <input type="email" name="email" id="" onChange={handleChange} />
-
                 <div className='showpass' onClick={sendOtp} >
                   {"verify"}
                 </div>

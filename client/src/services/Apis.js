@@ -1,4 +1,5 @@
 import { commonrequest } from "./ApiCall";
+
 export const registerfunction = async (data) => {
     return await commonrequest("POST", `/user/register`, data)
 }

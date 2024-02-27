@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { userTransaction } from '../../../../services/Apis';
+import { toast } from 'react-toastify';
 
 const WalletContext = createContext();
 
@@ -8,10 +9,15 @@ export const WalletProvider = ({ children }) => {
     useEffect(() => {
         fetchData();
     }, []);
+
     const fetchData = async () => {
-        const response = await userTransaction();
-        if (response.status === 200) {
-            setBalance(response.data.balance)
+        try {
+            const response = await userTransaction();
+            if (response.status === 200) {
+                setBalance(response.data.balance)
+            }
+        } catch (error) {
+            toast.error('JWT token is not present');
         }
     }
 
