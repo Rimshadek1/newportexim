@@ -81,7 +81,8 @@ exports.userregister = async (req, res) => {
 
 // user send otp
 exports.userOtpSend = async (req, res) => {
-    const email = req.params.id;
+    const { email } = req.body;
+    console.log(email);
     if (!email) {
         res.status(400).json({ error: "Please Enter Your Email" })
     }

@@ -31,7 +31,10 @@ const Register = () => {
       toast.error('Enter Valid Email !');
     } else {
       try {
-        const response = await sentOtpFunction(email);
+        const data = {
+          email: email
+        }
+        const response = await sentOtpFunction(data);
         if (response.status === 200 && response.data.message === 'Email sent Successfully') {
           toast.success('OTP sent successfully');
         } else if (response.status === 400) {
