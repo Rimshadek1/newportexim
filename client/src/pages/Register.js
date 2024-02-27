@@ -52,18 +52,15 @@ const Register = () => {
   const sendOtp = async (e) => {
     e.preventDefault();
 
-    const { email } = inputdata; // Extract email from inputdata state
+    const { email } = inputdata;
 
     if (email === '') {
       toast.error('Enter Your Email !');
     } else if (!email.includes('@')) {
       toast.error('Enter Valid Email !');
     } else {
-      const data = {
-        email: email,
-      };
 
-      const response = await sentOtpFunction(data);
+      const response = await sentOtpFunction(email);
       if (response.status === 200) {
         toast.success('otp send successfully');
       } else {

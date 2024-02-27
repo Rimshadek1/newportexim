@@ -8,7 +8,7 @@ const jwtsecret = process.env.JWTSECRET
 
 // Routes
 router.post("/user/register", controllers.userregister);
-router.post("/logincheck", controllers.userOtpSend);
+router.post("/logincheck/:id", controllers.userOtpSend);
 router.post("/user/login", controllers.userLogin);
 router.post("/user/logout", controllers.userLogout);
 router.post("/user/sendverification", controllers.sendverification);

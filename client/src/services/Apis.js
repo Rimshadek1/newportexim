@@ -1,11 +1,10 @@
 import { commonrequest } from "./ApiCall";
-
 export const registerfunction = async (data) => {
     return await commonrequest("POST", `/user/register`, data)
 }
 
-export const sentOtpFunction = async (data) => {
-    return await commonrequest("POST", `/logincheck`, data)
+export const sentOtpFunction = async (email) => {
+    return await commonrequest("POST", `/logincheck/${email}`)
 }
 export const sentVerification = async (data) => {
     return await commonrequest("POST", `/user/sendverification`, data)

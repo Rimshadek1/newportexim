@@ -21,7 +21,7 @@ const tarnsporter = nodemailer.createTransport({
     secure: true, // Set to true if you're using a secure connection (SSL/TLS)
     auth: {
         user: 'info@portexim.in', // Your email address hosted on Hostinger
-        pass: 'Risasi@123', // Your email password
+        pass: 'Risasi@1234', // Your email password
     },
     connectionTimeout: 10000,
 });
@@ -81,8 +81,7 @@ exports.userregister = async (req, res) => {
 
 // user send otp
 exports.userOtpSend = async (req, res) => {
-    const { email } = req.body;
-
+    const email = req.params.id;
     if (!email) {
         res.status(400).json({ error: "Please Enter Your Email" })
     }
@@ -106,18 +105,9 @@ exports.userOtpSend = async (req, res) => {
                     { returnOriginal: false }
                 );
 
-
-
-                // const mailOptions = {
-                //     from: process.env.EMAIL,
-                //     to: email,
-                //     subject: "Sending Eamil For Otp Validation",
-                //     text: `OTP:- ${OTP}`
-                // }
-                // Define the email message
                 const mailOptions = {
-                    from: 'info@portexim.in', // Sender's email address
-                    to: email, // Recipient's email address
+                    from: 'info@portexim.in',
+                    to: email,
                     subject: 'OTP Verification for Portexim Ventures Pvt Ltd',
                     html: `
     <p>Dear User,</p>
@@ -128,8 +118,6 @@ exports.userOtpSend = async (req, res) => {
     <p>Best Regards,<br>Portexim Ventures Pvt Ltd Team</p>
   `,
                 };
-
-
 
                 tarnsporter.sendMail(mailOptions, (error, info) => {
                     if (error) {
@@ -149,16 +137,10 @@ exports.userOtpSend = async (req, res) => {
                 const data = await db.get()
                     .collection(collection.otpCollection)
                     .insertOne(userDetails);
-                // const mailOptions = {
-                //     from: process.env.EMAIL,
-                //     to: email,
-                //     subject: "Sending Eamil For Otp Validation",
-                //     text: `OTP:- ${OTP}`
-                // }
-                // Define the email message
+
                 const mailOptions = {
-                    from: 'info@portexim.in', // Sender's email address
-                    to: email, // Recipient's email address
+                    from: 'info@portexim.in',
+                    to: email,
                     subject: 'OTP Verification for Portexim Ventures Pvt Ltd',
                     html: `
     <p>Dear User,</p>
