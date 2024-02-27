@@ -5,6 +5,7 @@ const db = require('./Config/connection')
 const indexRouter = require("./Routes/router");
 require("dotenv").config();
 const PORT = process.env.port;
+const origin = process.env.origin;
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
@@ -18,7 +19,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 const corsOptions = {
-    origin: 'https://rimshad.tech',
+    origin: origin,
     methods: ['GET', 'POST', 'DELETE'],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization'],
