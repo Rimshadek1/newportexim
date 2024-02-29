@@ -13,3 +13,7 @@
         font-size: x-large;
     }
 }
+
+.readytoshrink h1 {
+    font-size: 3vw;
+}

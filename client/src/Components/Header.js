@@ -1,8 +1,13 @@
-import React from 'react'
-import './css/style.css'
-import './css/bootstrap.min.css'
+import React, { useState } from 'react';
+import './css/style.css';
+import './css/bootstrap.min.css';
 import { Link } from 'react-router-dom';
+
 function Header() {
+    const [isNavCollapsed, setIsNavCollapsed] = useState(true);
+
+    const handleNavCollapse = () => setIsNavCollapsed(!isNavCollapsed);
+
     return (
         <div>
             {/* Navbar Start */}
@@ -10,10 +15,19 @@ function Header() {
                 <a href="index.html" className="navbar-brand d-flex align-items-center px-4 px-lg-5">
                     <img src="img/portexim.png" style={{ height: '60%' }} alt="portexim logo" />
                 </a>
-                <button type="button" className="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                <button
+                    className={`navbar-toggler me-4 ${isNavCollapsed ? 'collapsed' : ''}`}
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarCollapse"
+                    aria-controls="navbarCollapse"
+                    aria-expanded={!isNavCollapsed ? true : false}
+                    aria-label="Toggle navigation"
+                    onClick={handleNavCollapse}
+                >
                     <span className="navbar-toggler-icon"></span>
                 </button>
-                <div className="collapse navbar-collapse" id="navbarCollapse">
+                <div className={`${isNavCollapsed ? 'collapse' : ''} navbar-collapse`} id="navbarCollapse">
                     <div className="navbar-nav ms-auto p-4 p-lg-0">
                         <Link to="/home" className="nav-item nav-link">Home</Link>
                         <Link to="/booking" className="nav-item nav-link">Items to Export</Link>
@@ -21,10 +35,10 @@ function Header() {
                         <Link to="/itemtoexport" className="nav-item nav-link">Cartitems</Link>
                     </div>
                 </div>
-            </nav >
+            </nav>
             {/* Navbar End */}
-        </div >
-    )
+        </div>
+    );
 }
 
-export default Header
+export default Header;

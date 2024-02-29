@@ -25,7 +25,7 @@ function Itemsexit() {
             }
         };
         fetchProfitData();
-    }, [navigate]);
+    }, []);
 
 
 

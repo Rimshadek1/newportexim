@@ -26,7 +26,7 @@ function Itemsfunded() {
         };
 
         fetchData();
-    }, [navigate]);
+    }, []);
 
     const zeroSharesTrades = trade.filter(tradeItem => tradeItem.sharesavailable === 0);
 

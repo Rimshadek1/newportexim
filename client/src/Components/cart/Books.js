@@ -24,7 +24,7 @@ function Books() {
         };
 
         fetchData();
-    }, [navigate]);
+    }, []);
     const filteredTrade = trade.filter(tradeItem => tradeItem.sharesavailable > 0);
     return (
         <div className='readytoshrink'>

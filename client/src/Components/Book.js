@@ -7,23 +7,24 @@ function Book() {
     const [trade, setTrade] = useState([]);
     const navigate = useNavigate();
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await viewTrades();
-                if (response.status === 200) {
-                    const tradesArray = Array.isArray(response.data.data) ? response.data.data : [response.data.data];
-                    setTrade(tradesArray);
-                    navigate("/booking");
-                } else {
-                    toast.error(response.response.data.error);
-                }
-            } catch (error) {
-                console.error(error);
-            }
-        };
 
         fetchData();
-    }, [navigate]);
+    }, []);
+    const fetchData = async () => {
+        try {
+            const response = await viewTrades();
+            if (response.status === 200) {
+                const tradesArray = Array.isArray(response.data.data) ? response.data.data : [response.data.data];
+                setTrade(tradesArray);
+                navigate("/booking");
+            } else {
+                toast.error(response.response.data.error);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     const filteredTrade = trade.filter(tradeItem => tradeItem.sharesavailable > 0);
 
 
