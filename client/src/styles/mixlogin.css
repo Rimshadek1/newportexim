@@ -160,8 +160,7 @@ body {
 
 @media (max-width: 750px) {
     .login1 {
-        width: 80%;
-        height: 60vh;
+        width: 96%;
         padding: 35px 10px;
         box-shadow: 0 0 15px -10px #48352d;
         border-radius: 10px;
@@ -171,7 +170,7 @@ body {
         justify-content: center;
         align-items: center;
         position: absolute;
-        margin-left: 10%;
+        margin-left: 2%;
         margin-top: 20%;
     }
 }

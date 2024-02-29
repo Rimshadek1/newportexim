@@ -231,7 +231,8 @@
         font-size: 14px;
     }
 
-    .transactiontable {
+
+    .portfolios {
         margin-bottom: 20px;
         margin-left: 5%;
         width: 90%;
@@ -245,10 +246,26 @@
 @media (max-width: 700px) {
     .portfoliovalue {
         margin-top: 30px;
-        width: 89.5%;
+        width: 93%;
         height: 130px;
         background: white;
         border-radius: 10px;
         margin-left: 5.25%;
+    }
+
+    .total .monthlyincome,
+    .total .totalincome,
+    .total .capitalappreciation {
+        width: 98%;
+        height: 100px;
+        background: white;
+        margin-left: 0;
+        margin-top: 20px;
+    }
+
+    .portfolios {
+        margin-bottom: 20px;
+        margin-left: 5%;
+        width: 93%;
     }
 }

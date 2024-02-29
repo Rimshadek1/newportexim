@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import '../css/style.css';
 import '../css/bootstrap.min.css';
 import { Link } from 'react-router-dom';
+import './CartUp.css'
 function WalletCartUp() {
     const [isNavCollapsed, setIsNavCollapsed] = useState(true);
 
@@ -9,7 +10,7 @@ function WalletCartUp() {
 
     return (
         <>
-            <nav className="navbar navbar-expand-lg bg-white navbar-light sticky-top p-0">
+            <nav className="navbar navbar-expand-lg bg-white navbar-light sticky-top p-0 navbarss">
                 <a href="index.html" className="navbar-brand d-flex align-items-center px-4 px-lg-5">
                     <img src="img/portexim.png" style={{ height: '60%' }} alt="portexim logo" />
                 </a>

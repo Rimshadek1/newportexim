@@ -155,13 +155,16 @@ form .btnload {
     color: #ff3c00;
 }
 
+
 @media (max-width: 750px) {
     .imagesection {
         display: none;
     }
 
+
+
     .form_data.register {
-        width: 80%;
+        width: 96%;
         height: 80vh;
         padding: 35px 10px;
         box-shadow: 0 0 15px -10px #48352d;
@@ -172,8 +175,8 @@ form .btnload {
         justify-content: center;
         align-items: center;
         position: absolute;
-        margin-left: 10%;
-        margin-top: 10%;
+        margin-left: 2%;
+        margin-top: 20%;
     }
 
     .form_heading {

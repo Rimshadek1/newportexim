@@ -180,4 +180,10 @@
         background: orangered;
         color: white;
     }
+
+    .fullsecond {
+        width: 100%;
+        min-height: 65vh;
+        background-color: white;
+    }
 }

@@ -88,7 +88,7 @@ const Register = () => {
 
   return (
     <>
-      <section>
+      <section className='bgcolors'>
         <div className="form_data register">
           <div className="form_heading">
             <h1>Join Port</h1>
