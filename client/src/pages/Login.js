@@ -29,7 +29,6 @@ const Login = () => {
             }
 
             const response = await userVerify(data);
-            console.log(response);
             if (response.data.role === 'unVerifiedUser') {
                 localStorage.setItem('jwtToken', response.data.token);
                 setSpiner(false);

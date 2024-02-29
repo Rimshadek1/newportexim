@@ -30,13 +30,12 @@ app.use('/', indexRouter);
 
 
 // connection
-db.connect((err) => {
-    if (err)
-        console.log('errrorrrr' + err);
-    else
-        console.log("Database connected");
-})
-
-app.listen(PORT, () => {
-    console.log(`Server start at Port No :${PORT}`)
-})
+db.connect()
+    .then(() => {
+        app.listen(PORT, () => {
+            console.log(`Server started at Port No: ${PORT}`);
+        });
+    })
+    .catch(err => {
+        console.error('Error connecting to MongoDB:', err);
+    });
