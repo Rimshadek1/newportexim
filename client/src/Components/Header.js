@@ -1,12 +1,29 @@
 import React, { useState } from 'react';
 import './css/style.css';
 import './css/bootstrap.min.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { Logout } from '../services/Apis';
+import { toast } from 'react-toastify';
 
 function Header() {
     const [isNavCollapsed, setIsNavCollapsed] = useState(true);
 
     const handleNavCollapse = () => setIsNavCollapsed(!isNavCollapsed);
+    const navigate = useNavigate();
+
+    const logout = async () => {
+        try {
+            const response = await Logout();
+            if (response.status === 200) {
+                navigate('/');
+            } else {
+                toast.error('Logout not successful');
+            }
+        } catch (error) {
+            console.error('Error during logout:', error);
+            toast.error('An error occurred during logout. Please try again later.');
+        }
+    };
 
     return (
         <div>
@@ -33,6 +50,7 @@ function Header() {
                         <Link to="/booking" className="nav-item nav-link">Items to Export</Link>
                         <Link to="/about" className="nav-item nav-link">About</Link>
                         <Link to="/itemtoexport" className="nav-item nav-link">Cartitems</Link>
+                        <div onClick={logout} className="nav-item nav-link">Logout</div>
                     </div>
                 </div>
             </nav>

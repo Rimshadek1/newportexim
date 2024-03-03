@@ -222,6 +222,8 @@ exports.userLogin = async (req, res) => {
 };
 
 
+let isVerificationInProgress = false;
+
 exports.sendverification = async (req, res) => {
     try {
         // Check if req.cookies is defined
@@ -238,7 +240,13 @@ exports.sendverification = async (req, res) => {
             return;
         }
 
-        jwt.verify(token, jwtsecret, (err, decoded) => {
+        // If verification process is already in progress, return a conflict response
+        if (isVerificationInProgress) {
+            res.status(409).json({ error: 'Verification process is already in progress' });
+            return;
+        }
+
+        jwt.verify(token, jwtsecret, async (err, decoded) => {
             try {
                 if (err) {
                     res.status(401).json({ error: 'Unauthorized: Invalid token' });
@@ -250,20 +258,37 @@ exports.sendverification = async (req, res) => {
                 const proofFrontBuffer = Buffer.from(proofFrontBase64.split(',')[1], 'base64');
                 const proofBackBuffer = Buffer.from(proofBackBase64.split(',')[1], 'base64');
 
-                const veri = {
-                    userId: decoded.id, // Include user ID in verification data
+                const verificationData = {
+                    userId: decoded.id,
                     AdhaarFront: proofFrontBuffer,
                     AdhaarBack: proofBackBuffer,
                     bankAccountNumber: req.body.bankAccountNumber,
                     ifscCode: req.body.ifscCode,
+                };
+
+                // Set the flag to indicate verification process is in progress
+                isVerificationInProgress = true;
+
+                // Insert verification data into verifyPhotoCollection
+                const added = await db.get().collection(collection.verifyPhotoCollection).insertOne(verificationData);
+
+                if (added) {
+                    // Update user's role to 'verifying' in userCollection
+                    await db.get().collection(collection.userCollection).findOneAndUpdate(
+                        { _id: new ObjectId(decoded.id) },
+                        { $set: { role: 'verifying' } }
+                    );
+
+                    res.status(200).json({ message: 'Verification submitted successfully!' });
+                } else {
+                    res.status(500).json({ error: 'Failed to submit verification' });
                 }
-
-                db.get().collection(collection.verifyPhotoCollection).insertOne(veri);
-
-                res.status(200).json({ message: 'Verification submitted successfully!' });
             } catch (error) {
                 console.log(error);
                 res.status(500).json({ error: 'An error occurred during verification' });
+            } finally {
+                // Reset the flag after verification process is complete
+                isVerificationInProgress = false;
             }
         });
     } catch (error) {
@@ -271,10 +296,84 @@ exports.sendverification = async (req, res) => {
         res.status(500).json({ error: 'An error occurred during verification' });
     }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+// exports.sendverification = async (req, res) => {
+//     try {
+//         // Check if req.cookies is defined
+//         if (!req.cookies) {
+//             res.status(401).json({ error: 'Unauthorized: Missing cookie' });
+//             return;
+//         }
+
+//         // Extract user ID from the JWT token
+//         const token = req.cookies.token;
+
+//         if (!token) {
+//             res.status(401).json({ error: 'Unauthorized: Missing token' });
+//             return;
+//         }
+
+//         jwt.verify(token, jwtsecret, (err, decoded) => {
+//             try {
+//                 if (err) {
+//                     res.status(401).json({ error: 'Unauthorized: Invalid token' });
+//                     return;
+//                 }
+
+//                 const proofFrontBase64 = req.body.proofFront;
+//                 const proofBackBase64 = req.body.proofBack;
+//                 const proofFrontBuffer = Buffer.from(proofFrontBase64.split(',')[1], 'base64');
+//                 const proofBackBuffer = Buffer.from(proofBackBase64.split(',')[1], 'base64');
+
+//                 const veri = {
+//                     userId: decoded.id,
+//                     AdhaarFront: proofFrontBuffer,
+//                     AdhaarBack: proofBackBuffer,
+//                     bankAccountNumber: req.body.bankAccountNumber,
+//                     ifscCode: req.body.ifscCode,
+//                 }
+
+//                 const added = db.get().collection(collection.verifyPhotoCollection).insertOne(veri);
+//                 if (added) {
+//                     res.status(200).json({ message: 'Verification submitted successfully!' });
+//                 }
+
+//             } catch (error) {
+//                 console.log(error);
+//                 res.status(500).json({ error: 'An error occurred during verification' });
+//             }
+//         });
+//     } catch (error) {
+//         console.error('Error in sendverification:', error);
+//         res.status(500).json({ error: 'An error occurred during verification' });
+//     }
+// };
 exports.userLogout = (req, res) => {
-    res.clearCookie('token');
-    res.status(200).json({ message: 'Logout successful' });
+    try {
+        // Clear the token cookie
+        res.clearCookie('token');
+
+        // Send a response indicating successful logout
+        res.status(200).json({ message: 'Logout successful' });
+    } catch (error) {
+        // If an error occurs, send a response with the error message
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 };
+
 exports.getTradeDetail = async (req, res) => {
     try {
         const id = req.params.id;
@@ -790,97 +889,20 @@ exports.portfolioValue = async (req, res) => {
 };
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// exports.portfolioValue = async (req, res) => {
-//     const token = req.cookies.token;
-//     jwt.verify(token, jwtsecret, async (err, decoded) => {
-//         if (err) {
-//             res.status(500).json({ error: "Failed to verify token" });
-//         } else {
-//             const userId = decoded.id;
-//             const purchases = await db.get().collection(collection.purchasedCollection)
-//                 .find({ userId: userId })
-//                 .toArray();
-
-//             let productsInfo = [];
-//             let totalProfit = 0;
-
-//             for (const purchase of purchases) {
-//                 const purchaseDate = purchase.date;
-
-//                 for (const item of purchase.items) {
-//                     const product = await db.get().collection(collection.tradeCollection)
-//                         .findOne({ _id: new ObjectId(item.productId) });
-//                     if (product) { // Check if product exists
-//                         const singleShare = product.price / parseInt(product.shares);
-//                         const investmentAmount = singleShare * item.quantity;
-//                         const profitRecord = await db.get().collection(collection.profitCollection).findOne({
-//                             productId: item.productId
-//                         });
-//                         let singleShareProfit = 0;
-//                         if (profitRecord) {
-//                             const totalTradeProfit = parseInt(profitRecord.tradeProfit);
-//                             singleShareProfit = totalTradeProfit / parseInt(product.shares);
-//                         }
-
-//                         const itemProfit = singleShareProfit * item.quantity;
-
-//                         totalProfit += itemProfit;
-
-//                         productsInfo.push({
-//                             date: purchaseDate,
-//                             productId: item.productId,
-//                             quantity: item.quantity,
-//                             productName: product.trade,
-//                             productPrice: product.price,
-//                             returnPercentage: product.returnPercentage,
-//                             investmentAmount: investmentAmount,
-//                             profit: itemProfit
-//                         });
-//                     }
-//                 }
-//             }
-
-//             const countTotalPurchases = (productsInfo) => {
-//                 return productsInfo.length;
-//             };
-
-//             const calculateTotalSpent = (purchases) => {
-//                 return purchases.reduce((total, purchase) => total + purchase.totalPrice, 0);
-//             };
-//             const totalSpent = calculateTotalSpent(purchases) + totalProfit;
-
-//             productsInfo.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-//             res.status(200).json({ countTotalPurchases: countTotalPurchases(productsInfo), totalSpent, productsInfo });
-//         }
-//     });
-// };
+exports.isVeification = async (req, res) => {
+    const token = req.cookies.token;
+    jwt.verify(token, jwtsecret, async (err, decoded) => {
+        if (err) {
+            res.status(500).json({ error: "Failed to verify token" });
+        } else {
+            const role = decoded.role
+            console.log(decoded.id);
+            console.log(decoded.email);
+            console.log(role);
+            res.status(200).json({ role })
+        }
+    })
+};
 
 
 

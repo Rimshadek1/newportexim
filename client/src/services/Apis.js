@@ -51,6 +51,9 @@ export const portfolioValue = async (data) => {
 export const getTradeDetailsProfit = async (data) => {
     return await commonrequest("GET", `/getTradeDetailsProfit`, data);
 }
+export const userRole = async () => {
+    return await commonrequest("GET", `/isVerified`);
+}
 
 
 

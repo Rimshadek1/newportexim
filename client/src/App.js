@@ -30,6 +30,7 @@ import WithdrawPage from './Components/cart/wallet/WithdrawPage';
 import WithdrawAccept from './pages/Admin/Withdraws/WithdrawAccept';
 import { WalletProvider } from './Components/cart/wallet/walletContext/WalletContext';
 import Addprofit from './pages/Admin/Addprofit/Addprofit';
+import { RoleProvider } from './pages/userContext/RoleContext';
 
 
 function App() {
@@ -40,33 +41,35 @@ function App() {
     <>
       <UserContextProvider>
         <WalletProvider>
-          <Routes>
-            <Route path='/' element={<Login />} />
-            <Route path='/booking' element={<Booking />} />
-            <Route path='/funded' element={<Funded />} />
-            <Route path='/exited' element={<Exited />} />
-            <Route path='/about' element={<About />} />
-            <Route path='/itemtoexport' element={<Itemtoexport />} />
-            <Route path='/fundeded' element={<Fundeded />} />
-            <Route path='/exiteded' element={<Exiteded />} />
-            <Route path='/wallet' element={<Wallet />} />
-            <Route path='/portfolio' element={<Portfolio />} />
-            <Route path='/home' element={<Home />} />
-            <Route path='/cart' element={<Cartitems />} />
-            <Route path='/propertiesview/:id' element={<Propertiesoverview />} />
-            <Route path='/verification' element={<Verificaton />} />
-            <Route path='/admindash' element={<Admindash />} />
-            <Route path='/register' element={<Register />} />
-            <Route path='/dashboard' element={<Dashboard />} />
-            <Route path='/user/otp' element={<Otp />} />
-            <Route path='*' element={<Error />} />
-            <Route path='/addtrade' element={<Addtrade />} />
-            <Route path='/edittrade/:id' element={<Edittrade />} />
-            <Route path='/addprofit/:id' element={<Addprofit />} />
-            <Route path='/deposit' element={<DepositPage />} />
-            <Route path='/withdraw' element={<WithdrawPage />} />
-            <Route path='/withdrawaccept' element={<WithdrawAccept />} />
-          </Routes>
+          <RoleProvider>
+            <Routes>
+              <Route path='/' element={<Login />} />
+              <Route path='/booking' element={<Booking />} />
+              <Route path='/funded' element={<Funded />} />
+              <Route path='/exited' element={<Exited />} />
+              <Route path='/about' element={<About />} />
+              <Route path='/itemtoexport' element={<Itemtoexport />} />
+              <Route path='/fundeded' element={<Fundeded />} />
+              <Route path='/exiteded' element={<Exiteded />} />
+              <Route path='/wallet' element={<Wallet />} />
+              <Route path='/portfolio' element={<Portfolio />} />
+              <Route path='/home' element={<Home />} />
+              <Route path='/cart' element={<Cartitems />} />
+              <Route path='/propertiesview/:id' element={<Propertiesoverview />} />
+              <Route path='/verification' element={<Verificaton />} />
+              <Route path='/admindash' element={<Admindash />} />
+              <Route path='/register' element={<Register />} />
+              <Route path='/dashboard' element={<Dashboard />} />
+              <Route path='/user/otp' element={<Otp />} />
+              <Route path='*' element={<Error />} />
+              <Route path='/addtrade' element={<Addtrade />} />
+              <Route path='/edittrade/:id' element={<Edittrade />} />
+              <Route path='/addprofit/:id' element={<Addprofit />} />
+              <Route path='/deposit' element={<DepositPage />} />
+              <Route path='/withdraw' element={<WithdrawPage />} />
+              <Route path='/withdrawaccept' element={<WithdrawAccept />} />
+            </Routes>
+          </RoleProvider>
         </WalletProvider>
       </UserContextProvider>
     </>

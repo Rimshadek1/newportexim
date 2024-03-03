@@ -23,14 +23,15 @@ router.post("/withdrawRequest", controllers.withdrawRequest);
 router.get("/usertransaction", controllers.userTransactions);
 router.post("/purchase", controllers.purchase);
 router.get("/portfolioValue", controllers.portfolioValue);
-router.get("/getTradeDetailsProfit", adminController.getTradeDetailsProfit);
-router.get("/viewTradesFunded", adminController.viewTradesFunded);
-
+router.get('/isVerified', controllers.isVeification)
 router.get('/', (req, res) => {
     res.json('backend setup done')
 })
+
 //adminroutes
 
+router.get("/getTradeDetailsProfit", adminController.getTradeDetailsProfit);
+router.get("/viewTradesFunded", adminController.viewTradesFunded);
 router.post("/addtradedetails", adminController.addTradeDetails);
 router.get("/gettradedetails", adminController.getTradeDetails);
 router.get("/gettradedetailsedit/:id", adminController.getTradeDetailsEdit);

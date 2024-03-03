@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { deleteTrade, viewTrades } from '../../services/Apis';
+import { Logout, deleteTrade, viewTrades } from '../../services/Apis';
 import { ToastContainer, toast } from 'react-toastify';
 import './Admindash.css'
 function Admindash() {
@@ -12,27 +12,27 @@ function Admindash() {
     const [zoomed3, setZoomed3] = useState(null);
     const [zoomed4, setZoomed4] = useState(null);
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await viewTrades();
-                console.log('Response:', response);
-
-                if (response.status === 200) {
-                    const tradesArray = Array.isArray(response.data?.data) ? response.data.data : [response.data?.data];
-                    setTrade(tradesArray);
-                    navigate("/admindash");
-                } else {
-                    console.error('Error fetching trades:', response.data?.error);
-                    toast.error(response.data?.error || 'Error fetching trades');
-                }
-            } catch (error) {
-                console.error('Fetch error:', error);
-            }
-        };
-
-
         fetchData();
     }, []);
+    const fetchData = async () => {
+        try {
+            const response = await viewTrades();
+            console.log('Response:', response);
+
+            if (response.status === 200) {
+                const tradesArray = Array.isArray(response.data?.data) ? response.data.data : [response.data?.data];
+                setTrade(tradesArray);
+                navigate("/admindash");
+            } else {
+                console.error('Error fetching trades:', response.data?.error);
+                toast.error(response.data?.error || 'Error fetching trades');
+            }
+        } catch (error) {
+            console.error('Fetch error:', error);
+        }
+    };
+
+
 
     const handleDelete = async (id, event) => {
         try {
@@ -96,7 +96,20 @@ function Admindash() {
             setZoomed4(userId); // Zoom in
         }
     };
-    console.log(trade);
+    const logout = async () => {
+        try {
+            const response = await Logout();
+            if (response.status === 200) {
+                navigate('/');
+            } else {
+                toast.error('Logout not successful');
+            }
+        } catch (error) {
+            console.error('Error during logout:', error);
+            toast.error('An error occurred during logout. Please try again later.');
+        }
+    };
+
     return (
         <div>
             <section>
@@ -173,7 +186,7 @@ function Admindash() {
                         </tbody>
                     </table>
 
-                    <button className='btn btn-danger'>Logout</button>
+                    <button className='btn btn-danger' onClick={logout}>Logout</button>
                 </div>
             </section >
             <ToastContainer />

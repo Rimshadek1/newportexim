@@ -73,70 +73,71 @@ function Verificaton() {
             <div className="center">
                 <img src="img/portexim.png" alt="logo" />
                 <h2>Verification</h2>
-                <div className="doc">
-                    <p>Adhaar card front</p>
-                    <input
-                        type="file"
-                        required
-                        className="form-control"
-                        id="proofFront"
-                        autoComplete="off"
-                        name="proofFront"
-                        onChange={handleProofFrontChange}
-                        accept=".jpg, .png"
-                    />
-                </div>
-                <div className="doc">
-                    <p>Adhaar card back</p>
-                    <input
-                        type="file"
-                        required
-                        className="form-control"
-                        id="proofBack"
-                        autoComplete="off"
-                        name="proofBack"
-                        onChange={handleProofBackChange}
-                        accept=".jpg, .png"
-                    />
-                </div>
-                <div className="doc">
-                    <p>Bank account number</p>
-                    <input
-                        type="text"
-                        required
-                        className="form-control"
-                        id="bank"
-                        autoComplete="off"
-                        name="bank"
-                        value={bankAccountNumber}
-                        onChange={(e) => setBankAccountNumber(e.target.value)}
-                    />
-                </div>
+                <div className="docs">
+                    <div className="doc">
+                        <p>Adhaar card front</p>
+                        <input
+                            type="file"
+                            required
+                            className="form-control"
+                            id="proofFront"
+                            autoComplete="off"
+                            name="proofFront"
+                            onChange={handleProofFrontChange}
+                            accept=".jpg, .png"
+                        />
+                    </div>
+                    <div className="doc">
+                        <p>Adhaar card back</p>
+                        <input
+                            type="file"
+                            required
+                            className="form-control"
+                            id="proofBack"
+                            autoComplete="off"
+                            name="proofBack"
+                            onChange={handleProofBackChange}
+                            accept=".jpg, .png"
+                        />
+                    </div>
+                    <div className="doc">
+                        <p>Bank account number</p>
+                        <input
+                            type="text"
+                            required
+                            className="form-control"
+                            id="bank"
+                            autoComplete="off"
+                            name="bank"
+                            value={bankAccountNumber}
+                            onChange={(e) => setBankAccountNumber(e.target.value)}
+                        />
+                    </div>
 
-                <div className="doc">
-                    <p>IFSC code</p>
-                    <input
-                        type="text"
-                        required
-                        className="form-control"
-                        id="IFSC"
-                        autoComplete="off"
-                        name="IFSC"
-                        value={ifscCode}
-                        onChange={(e) => setIfscCode(e.target.value)}
-                        onInput={(e) => {
-                            e.target.value = e.target.value.toUpperCase();
-                        }}
-                    />
+                    <div className="doc">
+                        <p>IFSC code</p>
+                        <input
+                            type="text"
+                            required
+                            className="form-control"
+                            id="IFSC"
+                            autoComplete="off"
+                            name="IFSC"
+                            value={ifscCode}
+                            onChange={(e) => setIfscCode(e.target.value)}
+                            onInput={(e) => {
+                                e.target.value = e.target.value.toUpperCase();
+                            }}
+                        />
+                    </div>
                 </div>
-
 
                 <button className="btn" onClick={submitVerification}>
                     Submit
                 </button>
             </div>
             <ToastContainer />
-        </div>
+        </div >
     );
 }
 
