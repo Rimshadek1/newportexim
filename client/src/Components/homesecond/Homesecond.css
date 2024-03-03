@@ -147,39 +147,12 @@
     margin-bottom: 6%;
 }
 
-@media (max-width: 2200px) {
-    .fullsecond {
-        width: 100%;
-        min-height: 65vh;
-        background-color: white;
-        margin-top: 30%;
-    }
-}
-
-@media (max-width: 2200px) {
-    .fullsecond {
-        width: 100%;
-        min-height: 65vh;
-        background-color: white;
-        margin-top: 20%;
-    }
-}
-
-@media (max-width: 1460px) {
-    .fullsecond {
-        width: 100%;
-        min-height: 65vh;
-        background-color: white;
-        margin-top: 10%;
-    }
-}
-
 @media (max-width: 1200px) {
     .fullsecond {
         width: 100%;
-        min-height: 65vh;
+        min-height: 100vh;
         background-color: white;
-        margin-top: -50%;
+        margin-top: 350px;
     }
 }
 

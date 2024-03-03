@@ -40,18 +40,7 @@
     margin-left: 10px;
 }
 
-.info {
-    position: absolute;
-    z-index: 2;
-    background: white;
-    height: 130px;
-    width: 90%;
-    left: 5%;
-    top: 100%;
-    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
-    border-radius: 10px;
-    display: flex;
-}
+
 
 .registered {
     margin-left: 11%;
@@ -62,29 +51,7 @@
     font-size: 13px;
 }
 
-@media (max-width: 2200px) {
-    .info {
-        top: 140%;
-    }
-}
 
-@media (max-width: 2000px) {
-    .info {
-        top: 130%;
-    }
-}
-
-@media (max-width: 1800px) {
-    .info {
-        top: 120%;
-    }
-}
-
-@media (max-width: 1600px) {
-    .info {
-        top: 100%;
-    }
-}
 
 @media (max-width: 1200px) {
     .imagepart {
@@ -114,18 +81,6 @@
         margin: 20px;
     }
 
-    .info {
-        position: absolute;
-        z-index: 2;
-        background: white;
-        height: 130px;
-        width: 90%;
-        left: 5%;
-        top: 50%;
-        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
-        border-radius: 10px;
-        display: flex;
-    }
 }
 
 @media (max-width: 780px) {
@@ -167,58 +122,13 @@
         margin: 20px;
     }
 
-    .info {
-        position: absolute;
-        z-index: 2;
-        background: white;
-        width: 90%;
-        left: 5%;
-        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
-        border-radius: 10px;
-        display: flex;
-        flex-direction: column;
-        height: auto;
-        padding: 10px;
-    }
+
 }
 
-@media (max-width: 660px) {
+@media (max-width: 620px) {
     .textpart h2 {
         font-weight: 600;
         font-size: 30px;
         margin: 20px;
-    }
-
-    .info {
-        position: absolute;
-        z-index: 2;
-        background: white;
-        width: 90%;
-        left: 5%;
-        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
-        border-radius: 10px;
-        display: flex;
-        flex-direction: column;
-        height: auto;
-        padding: 10px;
-        top: 50%;
-    }
-}
-
-@media (max-width: 480px) {
-    .info {
-        top: 55%;
-    }
-}
-
-@media (max-width: 400px) {
-    .info {
-        top: 60%;
-    }
-}
-
-@media (max-width: 328px) {
-    .info {
-        top: 70%;
     }
 }
