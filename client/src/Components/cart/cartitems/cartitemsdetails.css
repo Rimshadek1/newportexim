@@ -71,7 +71,7 @@
 }
 
 .second {
-    width: 50%;
+    width: 100%;
     margin-left: 10%;
 }
 
@@ -193,6 +193,7 @@
         width: 100%;
         bottom: 0;
         left: 0;
+        top: 10%;
         margin: 0;
     }
 
@@ -217,5 +218,80 @@
 
     .cartitems {
         width: 100%;
+    }
+
+    .carttotals button {
+        font-size: 2vw;
+        margin-top: 20px;
+        width: 100%;
+        border-radius: 10px;
+        color: white;
+        background: rgb(0, 0, 27);
+    }
+
+    .carttotals h6 {
+        font-size: 5vw;
+        font-weight: 500;
+    }
+
+    .second {
+        width: 100%;
+        margin-left: 2%;
+    }
+
+    .second h6 {
+        font-size: 5vw;
+        margin-top: 0px;
+        font-weight: 600;
+    }
+
+    .thirdtotal i {
+        color: orangered;
+        background: white;
+        border-radius: 5px;
+        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+        width: 6vw;
+        height: 5vw;
+        text-align: center;
+        cursor: pointer;
+        font-size: 5vw;
+        margin: 20px;
+    }
+
+    .thirdtotal p {
+        color: orangered;
+        background: white;
+        border-radius: 5px;
+        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+        width: 6vw;
+        text-align: center;
+        font-size: 5vw;
+    }
+
+    .thirdtotal {
+        display: block;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        margin: 10px;
+    }
+
+    .secthird {
+        display: block;
+    }
+
+    .first img {
+        width: 100%;
+    }
+
+    .second p {
+        font-size: 4vw;
+        margin-top: 20px;
+    }
+
+    .fundedicon {
+        margin-top: 30px;
+        margin-left: 10px;
+        width: 150px;
     }
 }

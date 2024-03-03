@@ -134,26 +134,28 @@ function Cartitemsdetails() {
                                     <img src={item.product.image1 ? `data:image;base64,${item.product.image1.toString('base64')}` : ''} alt="tradeitem" />
                                     <button onClick={() => handleDeleteOnetrade(item._id, item.product._id)}>Remove</button>
                                 </div>
-                                <div className="second">
-                                    <h6>{item.product.trade}</h6>
-                                    <div className='income'>
-                                        <p className='inc'>Total shares available</p>
-                                        <p className='pr'>{item.product.sharesavailable}/{item.product.shares}</p>
-                                    </div>
-                                    <div className="appreciation">
-                                        <p className='inc'>Expected Returns</p>
-                                        <p className='pr'>{item.product.returnPercentage} %</p>
-                                    </div>
-                                </div>
-                                <div className="third">
-                                    <div className="thirdtotal">
-                                        <div className='amountofcart'>
-                                            <i className="fa-solid fa-minus" onClick={() => handleQuantityChange(item._id, item.product._id, item.quantity, -1)}></i>
-                                            <p>{item.quantity}</p>
-                                            <i className="fa-solid fa-plus" onClick={() => handleQuantityChange(item._id, item.product._id, item.quantity, 1)}></i>
+                                <div className="secthird">
+                                    <div className="second">
+                                        <h6>{item.product.trade}</h6>
+                                        <div className='income'>
+                                            <p className='inc'>Total shares available</p>
+                                            <p className='pr'>{item.product.sharesavailable}/{item.product.shares}</p>
                                         </div>
-                                        <div className="fundedicon">
-                                            <ProgressBar bgcolor="#ff3c00" progress={calculateFundedPercentage(item)} height="5px" />
+                                        <div className="appreciation">
+                                            <p className='inc'>Expected Returns</p>
+                                            <p className='pr'>{item.product.returnPercentage} %</p>
+                                        </div>
+                                    </div>
+                                    <div className="third">
+                                        <div className="thirdtotal">
+                                            <div className='amountofcart'>
+                                                <i className="fa-solid fa-minus" onClick={() => handleQuantityChange(item._id, item.product._id, item.quantity, -1)}></i>
+                                                <p>{item.quantity}</p>
+                                                <i className="fa-solid fa-plus" onClick={() => handleQuantityChange(item._id, item.product._id, item.quantity, 1)}></i>
+                                            </div>
+                                            <div className="fundedicon">
+                                                <ProgressBar bgcolor="#ff3c00" progress={calculateFundedPercentage(item)} height="5px" />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

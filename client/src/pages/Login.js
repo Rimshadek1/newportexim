@@ -29,7 +29,10 @@ const Login = () => {
             }
 
             const response = await userVerify(data);
-            if (response.data.role === 'unVerifiedUser' || 'verified' || "verifying") {
+
+            if (response.data.role === 'unVerifiedUser' ||
+                response.data.role === 'verified'||
+                response.data.role === "verifying") {
                 localStorage.setItem('jwtToken', response.data.token);
                 setSpiner(false);
                 navigate("/home");
