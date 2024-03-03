@@ -184,6 +184,12 @@
         margin-left: 0%;
     }
 
+    .left {
+        margin-right: auto;
+        font-size: 5vw;
+        font-weight: 600;
+    }
+
     .cartitems {
         margin-bottom: 30%;
     }
@@ -278,10 +284,12 @@
 
     .secthird {
         display: block;
+        width: 100%;
+        margin-left: -20%;
     }
 
     .first img {
-        width: 100%;
+        display: none;
     }
 
     .second p {
@@ -291,7 +299,19 @@
 
     .fundedicon {
         margin-top: 30px;
-        margin-left: 10px;
-        width: 150px;
+        margin-left: 42%;
+        /* width: 150px; */
+    }
+
+
+    .first {
+        display: none;
+    }
+
+    .removecart {
+        margin-top: 10px;
+        background: white;
+        border-radius: 5px;
+        font-size: 2vw;
     }
 }

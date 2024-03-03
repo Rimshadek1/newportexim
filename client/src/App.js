@@ -35,8 +35,8 @@ import { RoleProvider } from './pages/userContext/RoleContext';
 
 function App() {
   axios.defaults.withCredentials = true;
-  // axios.defaults.baseURL = process.env.REACT_APP_BASE_URL;
-  axios.defaults.baseURL = 'http://localhost:4002';
+  axios.defaults.baseURL = process.env.REACT_APP_BASE_URL;
+  // axios.defaults.baseURL = 'http://localhost:4002';
   return (
     <>
       <UserContextProvider>

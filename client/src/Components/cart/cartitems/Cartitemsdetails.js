@@ -156,6 +156,7 @@ function Cartitemsdetails() {
                                             <div className="fundedicon">
                                                 <ProgressBar bgcolor="#ff3c00" progress={calculateFundedPercentage(item)} height="5px" />
                                             </div>
+                                            <button className='removecart' onClick={() => handleDeleteOnetrade(item._id, item.product._id)}>Remove</button>
                                         </div>
                                     </div>
                                 </div>

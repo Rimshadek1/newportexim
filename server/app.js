@@ -19,8 +19,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 const corsOptions = {
-    origin: 'http://localhost:3000',
-    // origin: 'https://rimshad.tech',
+    // origin: 'http://localhost:3000',
+    origin: 'https://rimshad.tech',
     methods: ['GET', 'POST', 'DELETE'],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization'],
