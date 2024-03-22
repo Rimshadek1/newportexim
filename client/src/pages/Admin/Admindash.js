@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Logout, deleteTrade, viewTrades } from '../../services/Apis';
+import { Logout, deleteTrade, userRole, viewTrades } from '../../services/Apis';
 import { ToastContainer, toast } from 'react-toastify';
 import './Admindash.css'
 function Admindash() {
@@ -12,17 +12,29 @@ function Admindash() {
     const [zoomed3, setZoomed3] = useState(null);
     const [zoomed4, setZoomed4] = useState(null);
     useEffect(() => {
-        fetchData();
+        // Check if the user is an admin before fetching trades data
+        const checkUserRole = async () => {
+            try {
+                const response = await userRole();
+                if (response.data.role !== "admin") {
+                    navigate('/');
+                } else {
+                    fetchData(); // Fetch trades data if user is an admin
+                }
+            } catch (error) {
+                console.error('Error checking user role:', error);
+                toast.error('Error checking user role. Please try again later.');
+            }
+        };
+
+        checkUserRole();
     }, []);
     const fetchData = async () => {
         try {
             const response = await viewTrades();
-            console.log('Response:', response);
-
             if (response.status === 200) {
                 const tradesArray = Array.isArray(response.data?.data) ? response.data.data : [response.data?.data];
                 setTrade(tradesArray);
-                navigate("/admindash");
             } else {
                 console.error('Error fetching trades:', response.data?.error);
                 toast.error(response.data?.error || 'Error fetching trades');
@@ -118,6 +130,11 @@ function Admindash() {
                         <div className="col">
                             <Link to="/addtrade" className="btn btn-primary ml-auto">
                                 Add trade
+                            </Link>
+                        </div>
+                        <div className="col">
+                            <Link to="/verifyemplyee" className="btn btn-success ml-auto">
+                                Verification
                             </Link>
                         </div>
                         <div className="col">

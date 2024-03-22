@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { viewTrades } from '../../services/Apis';
 import { ToastContainer, toast } from 'react-toastify';
 import './Books.css'
 import TradeCard from '../TradeCard';
 function Books() {
     const [trade, setTrade] = useState([]);
-    const navigate = useNavigate();
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -14,7 +13,6 @@ function Books() {
                 if (response.status === 200) {
                     const tradesArray = Array.isArray(response.data.data) ? response.data.data : [response.data.data];
                     setTrade(tradesArray);
-                    navigate("/itemtoexport");
                 } else {
                     toast.error(response.response.data.error);
                 }

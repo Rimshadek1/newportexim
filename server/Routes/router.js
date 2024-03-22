@@ -42,6 +42,9 @@ router.post('/deleteWithdrawal', adminController.deleteWithdrawal);
 router.delete('/deletetradedetails/:id', adminController.deleteTradeDetails);
 router.post('/tradeProfit', adminController.tradeProfit);
 router.get('/viewTradeProfit/:id', adminController.viewTradeProfit);
+router.get('/verfiyEmployee', adminController.verifyEmployee);
+router.post('/VerifiedEmployee', adminController.VerifiedEmployee);
+router.post('/unVerifiedEmployee', adminController.unVerifiedEmployee);
 
 
 

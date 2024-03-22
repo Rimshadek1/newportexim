@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-import { viewTradesEdit, updateTradeDetails } from "../../../services/Apis";
+import { viewTradesEdit, updateTradeDetails, userRole } from "../../../services/Apis";
 
 function Edittrade() {
     const { id } = useParams();
@@ -24,29 +24,32 @@ function Edittrade() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchData = async () => {
+        const fetchRoleAndData = async () => {
             try {
-                const response = await viewTradesEdit(id);
+                const roleResponse = await userRole();
 
+                if (roleResponse.status === 200 && roleResponse.data.role === 'admin') {
+                    const response = await viewTradesEdit(id);
 
-
-                if (response.status === 200) {
-
-                    // Update the setValues call to include existing base64 images
-                    setValues({
-                        ...response.data?.data,
-                        images: response.data?.data.images || [null, null, null, null, null],
-                    });
+                    if (response.status === 200) {
+                        setValues({
+                            ...response.data?.data,
+                            images: response.data?.data.images || [null, null, null, null, null],
+                        });
+                    } else {
+                        toast.error(response.response.data.error);
+                        navigate("/admindash");
+                    }
                 } else {
-                    toast.error(response.response.data.error);
-                    navigate("/admindash");
+                    navigate("/");
                 }
             } catch (error) {
                 console.error(error);
+                toast.error("Error fetching user role or trade data");
             }
         };
 
-        fetchData();
+        fetchRoleAndData();
     }, [id, navigate]);
 
 

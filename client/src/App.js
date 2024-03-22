@@ -31,6 +31,7 @@ import WithdrawAccept from './pages/Admin/Withdraws/WithdrawAccept';
 import { WalletProvider } from './Components/cart/wallet/walletContext/WalletContext';
 import Addprofit from './pages/Admin/Addprofit/Addprofit';
 import { RoleProvider } from './pages/userContext/RoleContext';
+import VerifyEmp from './pages/Admin/VerfiyEmp/VerifyEmp';
 
 
 function App() {
@@ -68,6 +69,7 @@ function App() {
               <Route path='/deposit' element={<DepositPage />} />
               <Route path='/withdraw' element={<WithdrawPage />} />
               <Route path='/withdrawaccept' element={<WithdrawAccept />} />
+              <Route path='/verifyemplyee' element={<VerifyEmp />} />
             </Routes>
           </RoleProvider>
         </WalletProvider>

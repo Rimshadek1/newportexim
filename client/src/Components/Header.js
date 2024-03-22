@@ -10,9 +10,20 @@ function Header() {
 
     const handleNavCollapse = () => setIsNavCollapsed(!isNavCollapsed);
     const navigate = useNavigate();
-
+    function clearAllCookies() {
+        document.cookie.split(";").forEach((c) => {
+            document.cookie = c
+                .replace(/^ +/, "")
+                .replace(/=.*/, `=;expires=${new Date().toUTCString()};path=/`);
+        });
+    }
     const logout = async () => {
         try {
+            // Clear cookies
+            document.cookie = ''; // Clear all cookies
+            // Clear JWT token from local storage
+            localStorage.removeItem('jwtToken');
+            // Logout API call
             const response = await Logout();
             if (response.status === 200) {
                 navigate('/');

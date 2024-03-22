@@ -2,18 +2,27 @@ import React, { useState, useEffect, useCallback } from 'react';
 import './depositpage.css';
 import { postRequestAddMoney, verifyPayment } from '../../../services/Apis';
 import useRazorpay from "react-razorpay";
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+
 function DepositPage() {
     const [amount, setAmount] = useState('');
     const [Razorpay, isLoaded] = useRazorpay();
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+
     const handlePayment = useCallback(async () => {
         try {
+            // Check if amount exceeds Rs 10,000
+            if (amount > 100000) {
+                toast.error('Maximum deposit amount is Rs 100,000');
+                return;
+            }
+
             const data = {
                 amount
-            }
+            };
             const orders = await postRequestAddMoney(data);
-            const order = orders.data
+            const order = orders.data;
             if (!order) {
                 console.error('Error: Order is undefined');
                 return;
@@ -29,19 +38,17 @@ function DepositPage() {
                 handler: async (res) => {
                     const data = {
                         res, order
-                    }
+                    };
                     const response = await verifyPayment(data);
                     console.log(response);
                     if (response.status === 200) {
                         alert('Payment Success');
-                        navigate('/wallet')
+                        navigate('/wallet');
                     } else if (response.status === 400) {
                         alert('Payment failed: Invalid signature');
                     } else {
                         alert('Internal server error');
                     }
-
-
                 },
                 prefill: {
                     name: "Piyush Garg",
@@ -62,7 +69,7 @@ function DepositPage() {
         } catch (error) {
             console.error('Error in handlePayment:', error);
         }
-    }, [Razorpay, amount]);
+    }, [Razorpay, amount, navigate]);
 
     useEffect(() => {
         if (isLoaded && amount) {
@@ -80,7 +87,7 @@ function DepositPage() {
                         type="number"
                         value={amount}
                         onChange={(e) => setAmount(e.target.value)}
-                        placeholder='minimum RS 1000 '
+                        placeholder='minimum Rs 1000'
                     />
                 </label>
                 <button type="button" className='btn mt-5 depositreal' onClick={handlePayment}>

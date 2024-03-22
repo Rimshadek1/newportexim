@@ -95,6 +95,15 @@ export const tradeProfit = async (data) => {
 export const viewTradeProfit = async (id) => {
     return await commonrequest("GET", `/viewTradeProfit/${id}`);
 };
+export const viewverifingEmp = async (id) => {
+    return await commonrequest("GET", `/verfiyEmployee`);
+};
+export const employeeVerified = async (data) => {
+    return await commonrequest("POST", `/VerifiedEmployee`, data);
+};
+export const employeeUnVerified = async (data) => {
+    return await commonrequest("POST", `/unVerifiedEmployee`, data);
+};
 
 
 export const Logout = async () => {

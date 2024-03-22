@@ -68,7 +68,7 @@ function PortfolioItems() {
                             <p>Montly income</p>
                         </div>
                         <div className="amountdate">
-                            <h5>₹ <i className="fa-solid fa-lock"></i></h5>
+                            <h5>₹ 0</h5>
                             <p>Nov2023</p>
                         </div>
                     </div>
@@ -78,7 +78,7 @@ function PortfolioItems() {
                             <p>Total income</p>
                         </div>
                         <div className="amountdate">
-                            <h5>₹ <i className="fa-solid fa-lock"></i></h5>
+                            <h5>₹ 0</h5>
                             <p>As of nov 2023</p>
                         </div>
                     </div>
@@ -88,7 +88,7 @@ function PortfolioItems() {
                             <p>Appreciation</p>
                         </div>
                         <div className="amountdate">
-                            <h5>₹ <i className="fa-solid fa-lock"></i></h5>
+                            <h5>₹ 0</h5>
                             <p>As of nov 2023</p>
                         </div>
                     </div>
@@ -117,7 +117,7 @@ function PortfolioItems() {
                             <p>Portfolio occupancy</p>
                         </div>
                         <div className="amountdate percentage">
-                            <h5> <i className="fa-solid fa-lock"></i>%</h5>
+                            <h5>0%</h5>
 
                         </div>
                     </div>
@@ -127,7 +127,7 @@ function PortfolioItems() {
                             <p>Annualised trade yield</p>
                         </div>
                         <div className="amountdate percentage">
-                            <h5> <i className="fa-solid fa-lock"></i>%</h5>
+                            <h5> 0%</h5>
 
                         </div>
                     </div>
@@ -160,7 +160,7 @@ function PortfolioItems() {
                                     <td>{new Date(trade.createdAt).toLocaleDateString()}</td>
                                     <td style={{
                                         color: getAmountColor(trade),
-                                    }}>{trade.returnProfitPercentage} %</td>
+                                    }}> {trade.returnProfitPercentage.toFixed(2)} %</td>
                                 </tr>
                             ))}
 
@@ -196,7 +196,10 @@ function PortfolioItems() {
                                     <td>{trade.quantity}</td>
                                     <td>{trade.investmentAmount}</td>
                                     <td>{new Date(trade.date).toLocaleDateString()}</td>
-                                    <td>{trade.returnPercentage} %</td>
+                                    <td>
+                                        {trade.returnPercentage} %
+                                    </td>
+
                                 </tr>
                             ))}
 

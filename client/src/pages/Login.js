@@ -31,15 +31,19 @@ const Login = () => {
             const response = await userVerify(data);
 
             if (response.data.role === 'unVerifiedUser' ||
-                response.data.role === 'verified'||
+                response.data.role === 'verified' ||
                 response.data.role === "verifying") {
                 localStorage.setItem('jwtToken', response.data.token);
                 setSpiner(false);
                 navigate("/home");
+                window.location.reload();
+
             } else if (response.data.role === 'admin') {
                 localStorage.setItem('jwtToken', response.data.token);
                 setSpiner(false);
                 navigate("/admindash");
+                window.location.reload();
+
             } else {
                 toast.error(response.response.data.error);
             }

@@ -179,6 +179,10 @@
     margin-left: 5%;
 }
 
+.removecart {
+    display: none;
+}
+
 @media (max-width: 768px) {
     .fullcartitemdetail {
         margin-left: 0%;
@@ -288,9 +292,9 @@
         margin-left: -20%;
     }
 
-    .first img {
+    /* .first img {
         display: none;
-    }
+    } */
 
     .second p {
         font-size: 4vw;
@@ -304,9 +308,9 @@
     }
 
 
-    .first {
+    /* .first {
         display: none;
-    }
+    } */
 
     .removecart {
         margin-top: 10px;

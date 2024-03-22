@@ -1,13 +1,20 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import TradeCard from './TradeCard';
 import { viewTradesFunded } from '../services/Apis';
 import { ToastContainer, toast } from 'react-toastify';
 function Fund() {
     const [trade, setTrade] = useState([]);
-    const navigate = useNavigate();
+    const [loading, setLoading] = useState(true);
     useEffect(() => {
         fetchData();
+        // Hide loader after 3 seconds
+        const timer = setTimeout(() => {
+            setLoading(false);
+        }, 3000);
+
+        // Clean up the timer
+        return () => clearTimeout(timer);
     }, []);
     const fetchData = async () => {
         try {
@@ -15,7 +22,6 @@ function Fund() {
             if (response.status === 200) {
                 const tradesArray = Array.isArray(response.data.data) ? response.data.data : [response.data.data];
                 setTrade(tradesArray);
-                navigate("/funded");
             } else {
                 toast.error(response.response.data.error);
             }
@@ -29,6 +35,11 @@ function Fund() {
 
     return (
         <div>
+            {loading && (
+                <div className="loader-container">
+                    <div className="loader"></div>
+                </div>
+            )}
             {/* topimage */}
             <div className="container-fluid page-header py-5 mb-5">
                 <div className="container py-5 text-center">

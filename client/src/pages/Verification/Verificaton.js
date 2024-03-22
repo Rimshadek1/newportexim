@@ -56,8 +56,11 @@ function Verificaton() {
             try {
                 const response = await sentVerification(data);
                 if (response.status === 200) {
-                    toast.success('Verification submitted successfully!');
+
+                    toast.success('Verification submitted successfully! Please log in again.');
+                    // Redirect to login page
                     navigate('/home');
+                    window.location.reload();
                 } else {
                     toast.error(response.response.data.error);
                 }
@@ -67,6 +70,7 @@ function Verificaton() {
             }
         }
     };
+
 
     return (
         <div className="full">

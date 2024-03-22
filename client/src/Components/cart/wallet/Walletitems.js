@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import './Walletitem.css';
 import { Table } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import { userTransaction } from '../../../services/Apis'
 import { useWallet } from './walletContext/WalletContext';
+import { useRole } from '../../../pages/userContext/RoleContext';
+
 function Walletitems() {
     const [isHovered, setIsHovered] = useState(false);
     const [transaction, setTransaction] = useState(false);
     const { balance, setBalance } = useWallet();
+    const { role } = useRole();
+    const navigate = useNavigate();
+
 
     useEffect(() => {
         fetchData();
@@ -64,7 +69,17 @@ function Walletitems() {
         }
     }
 
-
+    const handle = () => {
+        // Assuming role is defined outside of this function
+        if (role === "unVerifiedUser") {
+            const confirmation = window.confirm('You are not verified. Please verify your account.');
+            if (confirmation) {
+                navigate('/verification');
+            }
+        } else if (role === "verifying") {
+            alert("Please wait until you become verified.")
+        }
+    }
     return (
         <div className='readytoshrinks'>
             <h5 className='h5wallet'>Wallet</h5>
@@ -74,8 +89,18 @@ function Walletitems() {
                         <p>Cash balance</p>
                         <h3>₹{balance} </h3>
                         <div className='button-container'>
-                            <Link to='/deposit' className='depbutton' >Deposit</Link>
-                            <Link to='/withdraw' className='withbutton'>Withdraw</Link>
+                            {role === "unVerifiedUser" || role === "verifying" ? (
+                                <>
+                                    <button onClick={handle} className='depbutton'>Deposit</button>
+                                    <button onClick={handle} className='withbutton'>Withdraw</button>
+                                </>
+                            ) : (
+                                <>
+                                    <Link to='/deposit' className='depbutton'>Deposit</Link>
+                                    <Link to='/withdraw' className='withbutton'>Withdraw</Link>
+                                </>
+                            )}
+
                         </div>
                     </div>
                 </div>

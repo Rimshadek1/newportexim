@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { getTradeDetailsProfit } from '../../services/Apis';
 import { ToastContainer, toast } from 'react-toastify';
 import './Books.css';
@@ -7,7 +7,6 @@ import ProfitTradeCard from './ProfitTradeCard';
 
 function Itemsexit() {
     const [profit, setProfit] = useState([]);
-    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchProfitData = async () => {
@@ -16,7 +15,6 @@ function Itemsexit() {
                 if (response.status === 200) {
                     const tradesArray = Array.isArray(response.data.combinedData) ? response.data.combinedData : [response.data.combinedData];
                     setProfit(tradesArray);
-                    navigate("/exiteded");
                 } else {
                     toast.error(response.response.data.error);
                 }

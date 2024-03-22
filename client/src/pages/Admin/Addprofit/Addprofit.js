@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { tradeProfit, viewTradeProfit } from '../../../services/Apis';
+import { tradeProfit, userRole, viewTradeProfit } from '../../../services/Apis';
 
 function Addprofit() {
     const { id } = useParams();
@@ -9,21 +9,28 @@ function Addprofit() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetchItems();
-    }, []);
+        const fetchData = async () => {
+            try {
+                const roleResponse = await userRole();
 
-    const fetchItems = async () => {
-        try {
-            const response = await viewTradeProfit(id);
-            if (response.status === 200) {
-                setExistingTradeProfit(response.data.existingTradeProfit.tradeProfit);
-            } else {
+                if (roleResponse.status === 200 && roleResponse.data.role === 'admin') {
+                    const response = await viewTradeProfit(id);
+                    if (response.status === 200) {
+                        setExistingTradeProfit(response.data.existingTradeProfit.tradeProfit);
+                    } else {
+                        alert('Failed to fetch trade profit');
+                    }
+                } else {
+                    navigate('/');
+                }
+            } catch (error) {
+                console.error('Error fetching user role or trade profit:', error);
                 alert('Failed to fetch trade profit');
             }
-        } catch (error) {
-            console.error('Error fetching trade profit:', error);
-        }
-    };
+        };
+
+        fetchData();
+    }, [id, navigate]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();

@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
-import { postTradeDetails } from '../../../services/Apis';
+import { postTradeDetails, userRole } from '../../../services/Apis';
 
 function Addtrade() {
     const [locationfrom, setLocationfrom] = useState()
@@ -102,7 +102,22 @@ function Addtrade() {
             }
         }
     };
+    useEffect(() => {
+        async function fetchRole() {
+            try {
+                const response = await userRole();
+                if (response.status === 200 && response.data.role === 'admin') {
 
+                } else {
+                    navigate('/');
+                }
+            } catch (error) {
+                console.error('Error fetching user role:', error);
+                toast.error('An error occurred while fetching user role');
+            }
+        }
+        fetchRole();
+    }, [navigate]);
 
 
 

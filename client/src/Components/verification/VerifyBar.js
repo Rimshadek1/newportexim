@@ -5,14 +5,13 @@ import { useRole } from '../../pages/userContext/RoleContext';
 
 function VerifyBar() {
     const { role } = useRole();
-    // Check if the role is 'verified'
     if (role === 'verified') {
         // If the role is 'verified', return null to remove the component
         return null;
     }
 
     // Check if the role is 'unVerifiedUser'
-    if (role === 'unVerifiedUser') {
+    if (role === 'unVerifiedUser' || role === undefined) {
         return (
             <div className='verifybar bg-danger'>
                 <div className="text-center veritext text-light">

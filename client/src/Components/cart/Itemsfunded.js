@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { viewTradesFunded } from '../../services/Apis';
 import { ToastContainer, toast } from 'react-toastify';
 import TradeCard from '../TradeCard';
@@ -7,7 +7,6 @@ import './Books.css';
 
 function Itemsfunded() {
     const [trade, setTrade] = useState([]);
-    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -16,7 +15,6 @@ function Itemsfunded() {
                 if (response.status === 200) {
                     const tradesArray = Array.isArray(response.data.data) ? response.data.data : [response.data.data];
                     setTrade(tradesArray);
-                    navigate("/fundeded");
                 } else {
                     toast.error(response.response.data.error);
                 }

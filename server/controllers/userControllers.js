@@ -82,7 +82,6 @@ exports.userregister = async (req, res) => {
 // user send otp
 exports.userOtpSend = async (req, res) => {
     const { email } = req.body;
-    console.log(email);
     if (!email) {
         res.status(400).json({ error: "Please Enter Your Email" })
     }
@@ -259,7 +258,7 @@ exports.sendverification = async (req, res) => {
                 const proofBackBuffer = Buffer.from(proofBackBase64.split(',')[1], 'base64');
 
                 const verificationData = {
-                    userId: decoded.id,
+                    userId: new ObjectId(decoded.id),
                     AdhaarFront: proofFrontBuffer,
                     AdhaarBack: proofBackBuffer,
                     bankAccountNumber: req.body.bankAccountNumber,
@@ -279,6 +278,8 @@ exports.sendverification = async (req, res) => {
                         { $set: { role: 'verifying' } }
                     );
 
+                    // Clear JWT token and cookies
+                    // res.clearCookie('token');
                     res.status(200).json({ message: 'Verification submitted successfully!' });
                 } else {
                     res.status(500).json({ error: 'Failed to submit verification' });
@@ -300,66 +301,6 @@ exports.sendverification = async (req, res) => {
 
 
 
-
-
-
-
-
-
-
-
-
-// exports.sendverification = async (req, res) => {
-//     try {
-//         // Check if req.cookies is defined
-//         if (!req.cookies) {
-//             res.status(401).json({ error: 'Unauthorized: Missing cookie' });
-//             return;
-//         }
-
-//         // Extract user ID from the JWT token
-//         const token = req.cookies.token;
-
-//         if (!token) {
-//             res.status(401).json({ error: 'Unauthorized: Missing token' });
-//             return;
-//         }
-
-//         jwt.verify(token, jwtsecret, (err, decoded) => {
-//             try {
-//                 if (err) {
-//                     res.status(401).json({ error: 'Unauthorized: Invalid token' });
-//                     return;
-//                 }
-
-//                 const proofFrontBase64 = req.body.proofFront;
-//                 const proofBackBase64 = req.body.proofBack;
-//                 const proofFrontBuffer = Buffer.from(proofFrontBase64.split(',')[1], 'base64');
-//                 const proofBackBuffer = Buffer.from(proofBackBase64.split(',')[1], 'base64');
-
-//                 const veri = {
-//                     userId: decoded.id,
-//                     AdhaarFront: proofFrontBuffer,
-//                     AdhaarBack: proofBackBuffer,
-//                     bankAccountNumber: req.body.bankAccountNumber,
-//                     ifscCode: req.body.ifscCode,
-//                 }
-
-//                 const added = db.get().collection(collection.verifyPhotoCollection).insertOne(veri);
-//                 if (added) {
-//                     res.status(200).json({ message: 'Verification submitted successfully!' });
-//                 }
-
-//             } catch (error) {
-//                 console.log(error);
-//                 res.status(500).json({ error: 'An error occurred during verification' });
-//             }
-//         });
-//     } catch (error) {
-//         console.error('Error in sendverification:', error);
-//         res.status(500).json({ error: 'An error occurred during verification' });
-//     }
-// };
 exports.userLogout = (req, res) => {
     try {
         // Clear the token cookie
@@ -895,10 +836,9 @@ exports.isVeification = async (req, res) => {
         if (err) {
             res.status(500).json({ error: "Failed to verify token" });
         } else {
-            const role = decoded.role
-            console.log(decoded.id);
-            console.log(decoded.email);
-            console.log(role);
+            const id = decoded.id;
+            const user = await db.get().collection(collection.userCollection).findOne({ _id: new ObjectId(id) })
+            const role = user.role
             res.status(200).json({ role })
         }
     })
