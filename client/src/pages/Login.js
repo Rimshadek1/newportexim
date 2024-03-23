@@ -1,54 +1,59 @@
-import React, { useState } from 'react'
-import { NavLink, useNavigate } from "react-router-dom"
+import React, { useState, useEffect } from 'react';
+import { NavLink, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import { userVerify } from "../services/Apis";
 import Spinner from 'react-bootstrap/Spinner';
-import "../styles/mixlogin.css"
+import "../styles/mixlogin.css";
 
 const Login = () => {
     const [passhow, setPassShow] = useState(false);
-
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [spiner, setSpiner] = useState(false);
-
     const navigate = useNavigate();
 
     const login = async (e) => {
         e.preventDefault();
 
         if (email === "") {
-            toast.error("Enter Your Email !")
+            toast.error("Enter Your Email !");
         } else if (!email.includes("@")) {
-            toast.error("Enter Valid Email !")
+            toast.error("Enter Valid Email !");
         } else {
-            setSpiner(true)
+            setSpiner(true);
             const data = {
                 email: email,
                 password: password
-            }
+            };
 
             const response = await userVerify(data);
 
-            if (response.data.role === 'unVerifiedUser' ||
+            if (
+                response.data.role === 'unVerifiedUser' ||
                 response.data.role === 'verified' ||
-                response.data.role === "verifying") {
+                response.data.role === "verifying"
+            ) {
                 localStorage.setItem('jwtToken', response.data.token);
                 setSpiner(false);
                 navigate("/home");
-                window.location.reload();
-
             } else if (response.data.role === 'admin') {
                 localStorage.setItem('jwtToken', response.data.token);
                 setSpiner(false);
                 navigate("/admindash");
-                window.location.reload();
-
             } else {
                 toast.error(response.response.data.error);
+                setSpiner(false);
             }
         }
-    }
+    };
+
+    useEffect(() => {
+        const reloadPage = localStorage.getItem('reloadPage');
+        if (reloadPage === "true") {
+            localStorage.removeItem('reloadPage');
+            window.location.reload();
+        }
+    }, []);
 
     return (
         <>
@@ -73,17 +78,15 @@ const Login = () => {
                             </div>
                         </div>
                         <button className='btn' onClick={login}>Login
-                            {
-                                spiner ? <span><Spinner animation="border" /></span> : ""
-                            }
+                            {spiner && <span><Spinner animation="border" /></span>}
                         </button>
-                        <p>Don't have and account <NavLink to="/register">Sign up</NavLink> </p>
+                        <p>Don't have an account <NavLink to="/register">Sign up</NavLink> </p>
                     </form>
                 </div>
                 <ToastContainer />
             </section >
         </>
-    )
-}
+    );
+};
 
-export default Login
+export default Login;

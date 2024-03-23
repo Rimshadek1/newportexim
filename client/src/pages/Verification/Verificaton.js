@@ -13,7 +13,6 @@ function Verificaton() {
 
     const proofSizeLimitKB = 200;
 
-
     const handleFileChange = async (e, setProof) => {
         const file = e.target.files[0];
         if (file) {
@@ -56,11 +55,13 @@ function Verificaton() {
             try {
                 const response = await sentVerification(data);
                 if (response.status === 200) {
-
                     toast.success('Verification submitted successfully! Please log in again.');
+
+                    // Set flag for page reload
+                    localStorage.setItem('reloadPage', 'true');
+
                     // Redirect to login page
                     navigate('/home');
-                    window.location.reload();
                 } else {
                     toast.error(response.response.data.error);
                 }
@@ -70,7 +71,6 @@ function Verificaton() {
             }
         }
     };
-
 
     return (
         <div className="full">
