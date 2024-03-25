@@ -30,7 +30,6 @@ const Login = () => {
             try {
                 const response = await userVerify(data);
                 localStorage.setItem('jwtToken', response.data.token);
-                localStorage.setItem('userRole', response.data.role);
                 setSpinner(false);
                 if (response.data.role === 'admin') {
                     navigate("/admindash");
@@ -46,38 +45,38 @@ const Login = () => {
     };
 
 
-        return (
-            <>
-                <section className='login'>
-                    <img src="img/log.jpg" className='back' alt="loginbackground" />
-                    <div className="login1 " style={{ height: '75%' }}>
-                        <div className="heading">
-                            <img src="img/portexim.png" style={{ height: '100%' }} alt="portexim logo" />
+    return (
+        <>
+            <section className='login'>
+                <img src="img/log.jpg" className='back' alt="loginbackground" />
+                <div className="login1 " style={{ height: '75%' }}>
+                    <div className="heading">
+                        <img src="img/portexim.png" style={{ height: '100%' }} alt="portexim logo" />
+                    </div>
+                    <form className='login3' style={{ marginTop: '1px' }}>
+                        <div className="form_input">
+                            <label htmlFor="email">Email</label>
+                            <input type="email" name="email" id="" onChange={(e) => setEmail(e.target.value)} placeholder='Enter Your Email Address' />
                         </div>
-                        <form className='login3' style={{ marginTop: '1px' }}>
-                            <div className="form_input">
-                                <label htmlFor="email">Email</label>
-                                <input type="email" name="email" id="" onChange={(e) => setEmail(e.target.value)} placeholder='Enter Your Email Address' />
-                            </div>
-                            <div className="form_input">
-                                <label htmlFor="password">Password</label>
-                                <div className='two'>
-                                    <input type={!passhow ? 'password' : 'text'} name="password" id="" onChange={(e) => setPassword(e.target.value)} />
-                                    <div className='showpass' onClick={() => setPassShow(!passhow)} >
-                                        {!passhow ? 'Show' : 'Hide'}
-                                    </div>
+                        <div className="form_input">
+                            <label htmlFor="password">Password</label>
+                            <div className='two'>
+                                <input type={!passhow ? 'password' : 'text'} name="password" id="" onChange={(e) => setPassword(e.target.value)} />
+                                <div className='showpass' onClick={() => setPassShow(!passhow)} >
+                                    {!passhow ? 'Show' : 'Hide'}
                                 </div>
                             </div>
-                            <button className='btn' onClick={login}>Login
-                                {spinner && <span><Spinner animation="border" /></span>}
-                            </button>
-                            <p>Don't have an account <NavLink to="/register">Sign up</NavLink> </p>
-                        </form>
-                    </div>
-                    <ToastContainer />
-                </section >
-            </>
-        );
-    };
+                        </div>
+                        <button className='btn' onClick={login}>Login
+                            {spinner && <span><Spinner animation="border" /></span>}
+                        </button>
+                        <p>Don't have an account <NavLink to="/register">Sign up</NavLink> </p>
+                    </form>
+                </div>
+                <ToastContainer />
+            </section >
+        </>
+    );
+};
 
-    export default Login;
+export default Login;
