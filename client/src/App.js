@@ -36,8 +36,8 @@ import VerifyEmp from './pages/Admin/VerfiyEmp/VerifyEmp';
 
 function App() {
   axios.defaults.withCredentials = true;
-  // axios.defaults.baseURL = process.env.REACT_APP_BASE_URL;
-  axios.defaults.baseURL = 'http://localhost:4002';
+  axios.defaults.baseURL = process.env.REACT_APP_BASE_URL;
+  // axios.defaults.baseURL = 'http://localhost:4002';
   return (
     <>
       <UserContextProvider>
