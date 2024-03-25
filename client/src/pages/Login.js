@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+// Login.js
+import React, { useState } from 'react';
 import { NavLink, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import { userVerify } from "../services/Apis";
@@ -6,11 +7,11 @@ import Spinner from 'react-bootstrap/Spinner';
 import "../styles/mixlogin.css";
 
 const Login = () => {
-    const [passhow, setPassShow] = useState(false);
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [spiner, setSpiner] = useState(false);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [spinner, setSpinner] = useState(false);
     const navigate = useNavigate();
+    const [passhow, setPassShow] = useState(false);
 
     const login = async (e) => {
         e.preventDefault();
@@ -20,73 +21,63 @@ const Login = () => {
         } else if (!email.includes("@")) {
             toast.error("Enter Valid Email !");
         } else {
-            setSpiner(true);
+            setSpinner(true);
             const data = {
                 email: email,
                 password: password
             };
 
-            const response = await userVerify(data);
-
-            if (
-                response.data.role === 'unVerifiedUser' ||
-                response.data.role === 'verified' ||
-                response.data.role === "verifying"
-            ) {
+            try {
+                const response = await userVerify(data);
                 localStorage.setItem('jwtToken', response.data.token);
-                setSpiner(false);
-                navigate("/home");
-            } else if (response.data.role === 'admin') {
-                localStorage.setItem('jwtToken', response.data.token);
-                setSpiner(false);
-                navigate("/admindash");
-            } else {
-                toast.error(response.response.data.error);
-                setSpiner(false);
+                localStorage.setItem('userRole', response.data.role);
+                setSpinner(false);
+                if (response.data.role === 'admin') {
+                    navigate("/admindash");
+                } else {
+                    navigate("/home");
+                }
+            } catch (error) {
+                console.error('Error during login:', error);
+                toast.error("Login failed. Please try again.");
+                setSpinner(false);
             }
         }
     };
 
-    useEffect(() => {
-        const reloadPage = localStorage.getItem('reloadPage');
-        if (reloadPage === "true") {
-            localStorage.removeItem('reloadPage');
-            window.location.reload();
-        }
-    }, []);
 
-    return (
-        <>
-            <section className='login'>
-                <img src="img/log.jpg" className='back' alt="loginbackground" />
-                <div className="login1 " style={{ height: '75%' }}>
-                    <div className="heading">
-                        <img src="img/portexim.png" style={{ height: '100%' }} alt="portexim logo" />
-                    </div>
-                    <form className='login3' style={{ marginTop: '1px' }}>
-                        <div className="form_input">
-                            <label htmlFor="email">Email</label>
-                            <input type="email" name="email" id="" onChange={(e) => setEmail(e.target.value)} placeholder='Enter Your Email Address' />
+        return (
+            <>
+                <section className='login'>
+                    <img src="img/log.jpg" className='back' alt="loginbackground" />
+                    <div className="login1 " style={{ height: '75%' }}>
+                        <div className="heading">
+                            <img src="img/portexim.png" style={{ height: '100%' }} alt="portexim logo" />
                         </div>
-                        <div className="form_input">
-                            <label htmlFor="password">Password</label>
-                            <div className='two'>
-                                <input type={!passhow ? 'password' : 'text'} name="password" id="" onChange={(e) => setPassword(e.target.value)} />
-                                <div className='showpass' onClick={() => setPassShow(!passhow)} >
-                                    {!passhow ? 'Show' : 'Hide'}
+                        <form className='login3' style={{ marginTop: '1px' }}>
+                            <div className="form_input">
+                                <label htmlFor="email">Email</label>
+                                <input type="email" name="email" id="" onChange={(e) => setEmail(e.target.value)} placeholder='Enter Your Email Address' />
+                            </div>
+                            <div className="form_input">
+                                <label htmlFor="password">Password</label>
+                                <div className='two'>
+                                    <input type={!passhow ? 'password' : 'text'} name="password" id="" onChange={(e) => setPassword(e.target.value)} />
+                                    <div className='showpass' onClick={() => setPassShow(!passhow)} >
+                                        {!passhow ? 'Show' : 'Hide'}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <button className='btn' onClick={login}>Login
-                            {spiner && <span><Spinner animation="border" /></span>}
-                        </button>
-                        <p>Don't have an account <NavLink to="/register">Sign up</NavLink> </p>
-                    </form>
-                </div>
-                <ToastContainer />
-            </section >
-        </>
-    );
-};
+                            <button className='btn' onClick={login}>Login
+                                {spinner && <span><Spinner animation="border" /></span>}
+                            </button>
+                            <p>Don't have an account <NavLink to="/register">Sign up</NavLink> </p>
+                        </form>
+                    </div>
+                    <ToastContainer />
+                </section >
+            </>
+        );
+    };
 
-export default Login;
+    export default Login;
