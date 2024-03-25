@@ -203,7 +203,7 @@ exports.userLogin = async (req, res) => {
                             console.error(err);
                             return res.status(500).json({ error: 'Error generating token' });
                         }
-                        res.cookie('token', token, { httpOnly: true, sameSite: 'none', secure: true });
+                        res.cookie('token', token, { httpOnly: true, sameSite: 'Lax', secure: true });
 
                         return res.status(200).json({ message: 'User login successful', token, role: preuser.role });
                     }
