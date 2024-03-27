@@ -1,19 +1,27 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { withdrawRequest } from '../../../services/Apis';
 import { useNavigate } from 'react-router-dom';
 import { useWallet } from './walletContext/WalletContext';
+import { UserContext } from '../../../pages/userContext/Usercontext';
 
 function WithdrawPage() {
     const [amount, setAmount] = useState('');
     const navigate = useNavigate();
     const { balance } = useWallet();
+    const { userData } = useContext(UserContext);
+
     const handlePayment = async () => {
         const isConfirmed = window.confirm(
             'Withdrawal request: It may take 2 working days for verification. Do you want to proceed?'
         );
         if (isConfirmed) {
             if (parseFloat(amount) <= parseFloat(balance)) {
-                const response = await withdrawRequest({ amount });
+                const data = {
+                    amount: parseFloat(amount),
+                    id: userData.id,
+                    username: userData.email
+                };
+                const response = await withdrawRequest(data);
 
                 if (response.status === 200) {
                     alert('Withdrawal request accepted. Please wait for the transaction.');

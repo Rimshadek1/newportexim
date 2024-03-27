@@ -1,18 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import './cartitemsdetails.css';
 import ProgressBar from '../../Progressbar';
 import { deleteCartOneItem, purchase, updateCartItemQuantity, viewCartTrades } from '../../../services/Apis';
 import { ToastContainer, toast } from 'react-toastify';
 import { useWallet } from '../wallet/walletContext/WalletContext';
 import { Link } from 'react-router-dom';
+import { UserContext } from '../../../pages/userContext/Usercontext';
 
 function Cartitemsdetails() {
     const [cart, setCart] = useState([]);
     const { balance } = useWallet();
+    const { userData } = useContext(UserContext);
+
 
     const fetchData = async () => {
         try {
-            const response = await viewCartTrades();
+
+            const response = await viewCartTrades(userData.id);
             if (response && response.status === 200) {
                 setCart(response.data.cartItems);
             } else {
@@ -32,7 +36,13 @@ function Cartitemsdetails() {
 
     const handleQuantityChange = async (itemId, productId, quantity, change) => {
         try {
-            const data = { itemId, productId, quantity, change }
+            const data = {
+                itemId,
+                productId,
+                quantity,
+                change,
+                id: userData.id
+            }
             const response = await updateCartItemQuantity(data); // Implement your API function for updating quantity
             if (response && response.status === 200) {
                 // Update local state to reflect the changes
@@ -69,7 +79,11 @@ function Cartitemsdetails() {
 
     const handleDeleteOnetrade = async (cartId, tradeId) => {
         try {
-            const response = await deleteCartOneItem({ cartId, tradeId });
+            const data = {
+                cartId, tradeId,
+                id: userData.id
+            }
+            const response = await deleteCartOneItem(data);
             if (response.status === 200) {
                 toast.success('Item deleted successfully');
                 fetchData();
@@ -101,7 +115,8 @@ function Cartitemsdetails() {
             const data = {
                 totalPrice: calculateTotalPrice(),
                 items: itemsForPayment,
-                itemIds: itemIds
+                itemIds: itemIds,
+                id: userData.id
             }
             const response = await purchase(data);
             if (response.status === 200) {

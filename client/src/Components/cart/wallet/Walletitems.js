@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import './Walletitem.css';
 import { Table } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
@@ -6,6 +6,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { userTransaction } from '../../../services/Apis'
 import { useWallet } from './walletContext/WalletContext';
 import { useRole } from '../../../pages/userContext/RoleContext';
+import { UserContext } from '../../../pages/userContext/Usercontext';
 
 function Walletitems() {
     const [isHovered, setIsHovered] = useState(false);
@@ -13,19 +14,25 @@ function Walletitems() {
     const { balance, setBalance } = useWallet();
     const { role } = useRole();
     const navigate = useNavigate();
-
+    const { userData } = useContext(UserContext);
 
     useEffect(() => {
         fetchData();
     }, []);
     const fetchData = async () => {
         try {
-            const response = await userTransaction();
-            if (response.status === 200) {
-                setTransaction(response.data.transactions)
-                setBalance(response.data.balance)
+            if (!userData || !userData.id) {
+                toast.error('User data is missing.');
+                return;
             }
 
+
+
+            const response = await userTransaction(userData.id);
+            if (response.status === 200) {
+                setTransaction(response.data.transactions);
+                setBalance(response.data.balance);
+            }
         } catch (error) {
             toast.error('An error occurred while fetching requests');
         }

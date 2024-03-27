@@ -1,14 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import '../Admindash.css';
-import { Logout, employeeUnVerified, employeeVerified, userRole, viewverifingEmp } from '../../../services/Apis';
+import { Logout, employeeUnVerified, employeeVerified, viewverifingEmp } from '../../../services/Apis';
+import { UserContext } from '../../userContext/Usercontext';
 
 function Admindash() {
     const [employeeData, setEmployeeData] = useState([]);
     const navigate = useNavigate();
     const [zoomed, setZoomed] = useState(null);
     const [zoomed1, setZoomed1] = useState(null);
+    const { userData } = useContext(UserContext);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -28,8 +30,7 @@ function Admindash() {
 
         const checkUserRole = async () => {
             try {
-                const response = await userRole();
-                if (response.data.role !== "admin") {
+                if (userData.role !== "admin") {
                     navigate('/');
                 } else {
                     fetchData();

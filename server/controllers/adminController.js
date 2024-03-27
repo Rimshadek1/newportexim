@@ -174,15 +174,17 @@ exports.getWithdrwalRequestss = async (req, res) => {
     try {
         const datas = await db.get().collection(collection.withdrawRequestCollection).find().toArray();
 
-        const userIds = datas.map((withdrawalRequest) => withdrawalRequest.userId);
+        const userIds = datas.map((withdrawalRequest) => new ObjectId(withdrawalRequest.userId));
 
         const acData = await db.get().collection(collection.verifyPhotoCollection)
             .find({ userId: { $in: userIds } })
             .toArray();
 
-        const data = datas.map((withdrawalRequest) => {
-            const correspondingAcData = acData.find(ac => ac.userId === withdrawalRequest.userId);
+        console.log(acData);
 
+        const data = datas.map((withdrawalRequest) => {
+            const correspondingAcData = acData.find(ac => ac.userId.toString() === withdrawalRequest.userId.toString());
+            console.log(new ObjectId(withdrawalRequest.userId));
             return {
                 username: withdrawalRequest.username,
                 amount: withdrawalRequest.amount,
@@ -193,12 +195,14 @@ exports.getWithdrwalRequestss = async (req, res) => {
             };
         });
 
+        console.log(data);
         res.status(200).json({ data });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
+
 exports.acceptWithdrawalss = async (req, res) => {
     const trade = req.body.trade;
     try {

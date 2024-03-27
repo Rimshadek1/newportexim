@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { tradeProfit, userRole, viewTradeProfit } from '../../../services/Apis';
+import { tradeProfit, viewTradeProfit } from '../../../services/Apis';
+import { UserContext } from '../../userContext/Usercontext';
 
 function Addprofit() {
     const { id } = useParams();
     const [tradeProfits, setTradeProfit] = useState('');
     const [existingTradeProfit, setExistingTradeProfit] = useState('');
     const navigate = useNavigate();
+    const { userData } = useContext(UserContext);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const roleResponse = await userRole();
-
-                if (roleResponse.status === 200 && roleResponse.data.role === 'admin') {
+                if (userData.role === 'admin') {
                     const response = await viewTradeProfit(id);
                     if (response.status === 200) {
                         setExistingTradeProfit(response.data.existingTradeProfit.tradeProfit);
@@ -25,7 +25,7 @@ function Addprofit() {
                 }
             } catch (error) {
                 console.error('Error fetching user role or trade profit:', error);
-                alert('Failed to fetch trade profit');
+                alert('Please add trade profit');
             }
         };
 

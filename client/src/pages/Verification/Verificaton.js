@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import './verification.css';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import { sentVerification } from '../../services/Apis';
+import { UserContext } from '../userContext/Usercontext';
 
 function Verificaton() {
     const [proofFront, setProofFront] = useState(null);
@@ -10,7 +11,7 @@ function Verificaton() {
     const [bankAccountNumber, setBankAccountNumber] = useState('');
     const [ifscCode, setIfscCode] = useState('');
     const navigate = useNavigate();
-
+    const { userData } = useContext(UserContext);
     const proofSizeLimitKB = 200;
 
     const handleFileChange = async (e, setProof) => {
@@ -46,6 +47,7 @@ function Verificaton() {
             toast.error('Upload both Adhaar front and back images!');
         } else {
             const data = {
+                id: userData.id,
                 proofFront: proofFront,
                 proofBack: proofBack,
                 bankAccountNumber: bankAccountNumber,
@@ -57,10 +59,6 @@ function Verificaton() {
                 if (response.status === 200) {
                     toast.success('Verification submitted successfully! Please log in again.');
 
-                    // Set flag for page reload
-                    localStorage.setItem('reloadPage', 'true');
-
-                    // Redirect to login page
                     navigate('/home');
                 } else {
                     toast.error(response.response.data.error);

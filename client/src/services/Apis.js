@@ -24,8 +24,8 @@ export const viewOnlyOneTrade = async (id) => {
 export const deleteCartOneItem = async (data) => {
     return await commonrequest("POST", `/deletecartoneitem`, data)
 }
-export const viewCartTrades = async () => {
-    return await commonrequest("GET", `/getcartproducts`)
+export const viewCartTrades = async (id) => {
+    return await commonrequest("GET", `/getcartproducts/${id}`)
 }
 export const updateCartItemQuantity = async (data) => {
     return await commonrequest("POST", `/change-product-quantity`, data);
@@ -39,8 +39,8 @@ export const verifyPayment = async (data) => {
 export const withdrawRequest = async (data) => {
     return await commonrequest("POST", `/withdrawRequest`, data);
 }
-export const userTransaction = async () => {
-    return await commonrequest("GET", `/usertransaction`);
+export const userTransaction = async (id) => {
+    return await commonrequest("GET", `/usertransaction/${id}`);
 }
 export const purchase = async (data) => {
     return await commonrequest("POST", `/purchase`, data);

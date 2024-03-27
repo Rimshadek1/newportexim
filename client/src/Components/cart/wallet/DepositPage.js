@@ -1,13 +1,16 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useContext } from 'react';
 import './depositpage.css';
 import { postRequestAddMoney, verifyPayment } from '../../../services/Apis';
 import useRazorpay from "react-razorpay";
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { UserContext } from '../../../pages/userContext/Usercontext';
 
 function DepositPage() {
     const [amount, setAmount] = useState('');
     const [Razorpay, isLoaded] = useRazorpay();
+    const { userData } = useContext(UserContext);
+
     const navigate = useNavigate();
 
     const handlePayment = useCallback(async () => {
@@ -19,7 +22,8 @@ function DepositPage() {
             }
 
             const data = {
-                amount
+                amount,
+                id: userData.id
             };
             const orders = await postRequestAddMoney(data);
             const order = orders.data;

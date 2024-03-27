@@ -14,13 +14,13 @@ router.post("/user/logout", controllers.userLogout);
 router.post("/user/sendverification", controllers.sendverification);
 router.get("/gettradedetail/:id", controllers.getTradeDetail);
 router.post("/addtocart", controllers.addToCart);
-router.get("/getcartproducts", controllers.getCartProducts);
+router.get("/getcartproducts/:id", controllers.getCartProducts);
 router.post("/change-product-quantity", controllers.changeProductQuantity);
 router.post("/deletecartoneitem", controllers.deletecartoneitem);
 router.post("/postRequestAddMoney", controllers.postRequestAddMoney);
 router.post("/verifyPayment", controllers.verifyPayment);
 router.post("/withdrawRequest", controllers.withdrawRequest);
-router.get("/usertransaction", controllers.userTransactions);
+router.get("/usertransaction/:id", controllers.userTransactions);
 router.post("/purchase", controllers.purchase);
 router.get("/portfolioValue", controllers.portfolioValue);
 router.get('/isVerified', controllers.isVeification)
@@ -51,43 +51,6 @@ router.post('/unVerifiedEmployee', adminController.unVerifiedEmployee);
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-//verification
-router.get('/profile', (req, res) => {
-    try {
-        const token = req.cookies.token;
-
-        if (token) {
-            jwt.verify(token, jwtsecret, {}, (err, userData) => {
-                if (err) {
-                    console.error('JWT Verification Error:', err);
-                    return res.status(401).json('Invalid token');
-                }
-
-                res.json({
-                    userData
-                });
-            });
-        } else {
-            res.status(401).json('No token');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        res.status(500).json('Internal Server Error');
-    }
-});
 
 
 

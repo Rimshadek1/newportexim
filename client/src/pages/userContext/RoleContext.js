@@ -1,28 +1,30 @@
 // RoleContext.js
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { userRole } from '../../services/Apis';
 import { toast } from 'react-toastify';
+import { jwtDecode } from 'jwt-decode';
+import { useNavigate } from "react-router-dom";
+
 
 const RolesContext = createContext();
-
 export const RoleProvider = ({ children }) => {
+    const authToken = localStorage.getItem('authToken');
+    const navigate = useNavigate();
+
     const [role, setRole] = useState(null);
 
     useEffect(() => {
-        fetchData();
-    }, []);
-
-    const fetchData = async () => {
-        try {
-            const response = await userRole();
-            if (response.status === 200) {
-                setRole(response.data.role);
+        if (authToken) {
+            try {
+                const decodedToken = jwtDecode(authToken);
+                setRole(decodedToken.role);
+            } catch (error) {
+                toast.error('Error decoding JWT token:', error);
+                navigate('/');
             }
-        } catch (error) {
-            console.error('Error fetching user role:', error);
-            toast.error('JWT token is not present role');
+        } else {
+            navigate('/');
         }
-    };
+    }, []);
 
     return (
         <RolesContext.Provider value={{ role, setRole }}>
@@ -34,3 +36,4 @@ export const RoleProvider = ({ children }) => {
 export const useRole = () => {
     return useContext(RolesContext);
 };
+

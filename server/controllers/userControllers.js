@@ -203,7 +203,6 @@ exports.userLogin = async (req, res) => {
                             console.error(err);
                             return res.status(500).json({ error: 'Error generating token' });
                         }
-                        res.cookie('token', token, { httpOnly: true, sameSite: 'none', secure: true });
 
                         return res.status(200).json({ message: 'User login successful', token, role: preuser.role });
                     }
@@ -219,82 +218,58 @@ exports.userLogin = async (req, res) => {
         return res.status(500).json({ error: 'Server error', error });
     }
 };
+// res.cookie('token', token, { httpOnly: true, sameSite: 'none', secure: true });
 
 
 let isVerificationInProgress = false;
 
 exports.sendverification = async (req, res) => {
     try {
-        // Check if req.cookies is defined
-        if (!req.cookies) {
-            res.status(401).json({ error: 'Unauthorized: Missing cookie' });
-            return;
-        }
-
-        // Extract user ID from the JWT token
-        const token = req.cookies.token;
-
-        if (!token) {
-            res.status(401).json({ error: 'Unauthorized: Missing token' });
-            return;
-        }
-
         // If verification process is already in progress, return a conflict response
         if (isVerificationInProgress) {
             res.status(409).json({ error: 'Verification process is already in progress' });
             return;
         }
 
-        jwt.verify(token, jwtsecret, async (err, decoded) => {
-            try {
-                if (err) {
-                    res.status(401).json({ error: 'Unauthorized: Invalid token' });
-                    return;
-                }
+        try {
+            const proofFrontBase64 = req.body.proofFront;
+            const proofBackBase64 = req.body.proofBack;
+            const proofFrontBuffer = Buffer.from(proofFrontBase64.split(',')[1], 'base64');
+            const proofBackBuffer = Buffer.from(proofBackBase64.split(',')[1], 'base64');
 
-                const proofFrontBase64 = req.body.proofFront;
-                const proofBackBase64 = req.body.proofBack;
-                const proofFrontBuffer = Buffer.from(proofFrontBase64.split(',')[1], 'base64');
-                const proofBackBuffer = Buffer.from(proofBackBase64.split(',')[1], 'base64');
+            const verificationData = {
+                userId: new ObjectId(req.body.id),
+                AdhaarFront: proofFrontBuffer,
+                AdhaarBack: proofBackBuffer,
+                bankAccountNumber: req.body.bankAccountNumber,
+                ifscCode: req.body.ifscCode,
+            };
+            // Set the flag to indicate verification process is in progress
+            isVerificationInProgress = true;
 
-                const verificationData = {
-                    userId: new ObjectId(decoded.id),
-                    AdhaarFront: proofFrontBuffer,
-                    AdhaarBack: proofBackBuffer,
-                    bankAccountNumber: req.body.bankAccountNumber,
-                    ifscCode: req.body.ifscCode,
-                };
+            // Insert verification data into verifyPhotoCollection
+            const added = await db.get().collection(collection.verifyPhotoCollection).insertOne(verificationData);
 
-                // Set the flag to indicate verification process is in progress
-                isVerificationInProgress = true;
-
-                // Insert verification data into verifyPhotoCollection
-                const added = await db.get().collection(collection.verifyPhotoCollection).insertOne(verificationData);
-
-                if (added) {
-                    // Update user's role to 'verifying' in userCollection
-                    await db.get().collection(collection.userCollection).findOneAndUpdate(
-                        { _id: new ObjectId(decoded.id) },
-                        { $set: { role: 'verifying' } }
-                    );
-
-                    // Clear JWT token and cookies
-                    // res.clearCookie('token');
-                    res.status(200).json({ message: 'Verification submitted successfully!' });
-                } else {
-                    res.status(500).json({ error: 'Failed to submit verification' });
-                }
-            } catch (error) {
-                console.log(error);
-                res.status(500).json({ error: 'An error occurred during verification' });
-            } finally {
-                // Reset the flag after verification process is complete
-                isVerificationInProgress = false;
+            if (added) {
+                // Update user's role to 'verifying' in userCollection
+                await db.get().collection(collection.userCollection).findOneAndUpdate(
+                    { _id: new ObjectId(req.body.id) }, // Assuming 'decoded.id' should be 'req.body.id'
+                    { $set: { role: 'verifying' } }
+                );
+                res.status(200).json({ message: 'Verification submitted successfully!' });
+            } else {
+                res.status(500).json({ error: 'Failed to submit verification' });
             }
-        });
-    } catch (error) {
-        console.error('Error in sendverification:', error);
-        res.status(500).json({ error: 'An error occurred during verification' });
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ error: 'An error occurred during verification' });
+        } finally {
+            // Reset the flag after verification process is complete
+            isVerificationInProgress = false;
+        }
+    } catch (error) { // Add missing catch block
+        console.log(error);
+        res.status(500).json({ error: 'An error occurred' });
     }
 };
 
@@ -394,53 +369,47 @@ exports.addToCart = async (req, res) => {
 
 exports.getCartProducts = async (req, res) => {
     try {
-        const token = req.cookies.token;
-        jwt.verify(token, jwtsecret, async (err, decoded) => {
-            if (err) {
-                return res.status(401).json({ error: 'Unauthorized' });
-            }
 
-            const userId = decoded.id;
-
-            try {
-                let cartItems = await db.get().collection(collection.cartCollection).aggregate([
-                    {
-                        $match: { user: new ObjectId(userId) }
-                    }, {
-                        $unwind: '$products'
-                    }, {
-                        $lookup: {
-                            from: collection.tradeCollection,
-                            localField: 'products.item',
-                            foreignField: '_id',
-                            as: 'product'
-                        }
-                    }, {
-                        $addFields: {
-                            item: '$products.item',
-                            quantity: '$products.quantity',
-                            product: { $arrayElemAt: ['$product', 0] }
-                        }
-                    }, {
-                        $addFields: {
-                            'product.price': { $toInt: '$product.price' },
-                            'product.shares': { $toInt: '$product.shares' },
-                            'product.sharesavailable': { $toInt: '$product.sharesavailable' }
-                        }
-                    }, {
-                        $project: {
-                            item: 1,
-                            quantity: 1,
-                            product: 1
-                        }
+        const userId = req.params.id;;
+        try {
+            let cartItems = await db.get().collection(collection.cartCollection).aggregate([
+                {
+                    $match: { user: new ObjectId(userId) }
+                }, {
+                    $unwind: '$products'
+                }, {
+                    $lookup: {
+                        from: collection.tradeCollection,
+                        localField: 'products.item',
+                        foreignField: '_id',
+                        as: 'product'
                     }
-                ]).toArray();
-                res.status(200).json({ cartItems });
-            } catch (error) {
-                console.error('Error fetching cart items:', error);
-                res.status(500).json({ error: 'Internal Server Error' });
-            }
-        });
+                }, {
+                    $addFields: {
+                        item: '$products.item',
+                        quantity: '$products.quantity',
+                        product: { $arrayElemAt: ['$product', 0] }
+                    }
+                }, {
+                    $addFields: {
+                        'product.price': { $toInt: '$product.price' },
+                        'product.shares': { $toInt: '$product.shares' },
+                        'product.sharesavailable': { $toInt: '$product.sharesavailable' }
+                    }
+                }, {
+                    $project: {
+                        item: 1,
+                        quantity: 1,
+                        product: 1
+                    }
+                }
+            ]).toArray();
+            res.status(200).json({ cartItems });
+        } catch (error) {
+            console.error('Error fetching cart items:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+
     } catch (error) {
         console.error('Error verifying JWT token:', error);
         res.status(500).json({ error: 'Internal Server Error' });
@@ -450,58 +419,54 @@ exports.getCartProducts = async (req, res) => {
 
 exports.changeProductQuantity = async (req, res) => {
     try {
-        const token = req.cookies.token;
-        jwt.verify(token, jwtsecret, async (err, decoded) => {
-            if (err) {
-                return res.status(401).json({ error: 'Unauthorized' });
+
+
+        const userId = req.body.id;
+
+        const { itemId, productId, quantity, change } = req.body;
+
+        // Convert change and quantity to integers
+        const intChange = parseInt(change);
+
+        try {
+            // Fetch the current cart item
+            const cartItem = await db.get().collection(collection.cartCollection).findOne({
+                user: new ObjectId(userId),
+                _id: new ObjectId(itemId)
+            });
+
+            if (!cartItem) {
+                return res.status(404).json({ error: 'Cart item not found' });
             }
 
-            const userId = decoded.id;
+            // Calculate the new quantity based on the change
+            const productToUpdate = cartItem.products.find(item => item.item.equals(new ObjectId(productId)));
 
-            const { itemId, productId, quantity, change } = req.body;
-
-            // Convert change and quantity to integers
-            const intChange = parseInt(change);
-
-            try {
-                // Fetch the current cart item
-                const cartItem = await db.get().collection(collection.cartCollection).findOne({
-                    user: new ObjectId(userId),
-                    _id: new ObjectId(itemId)
-                });
-
-                if (!cartItem) {
-                    return res.status(404).json({ error: 'Cart item not found' });
-                }
-
-                // Calculate the new quantity based on the change
-                const productToUpdate = cartItem.products.find(item => item.item.equals(new ObjectId(productId)));
-
-                if (!productToUpdate) {
-                    return res.status(404).json({ error: 'Product not found in cart item' });
-                }
-
-                const newQuantity = productToUpdate.quantity + intChange;
-
-                // Ensure the new quantity doesn't go below 1
-                const finalQuantity = Math.max(1, newQuantity);
-
-                // Update the cart item quantity in the database
-                const result = await db.get().collection(collection.cartCollection).updateOne(
-                    { user: new ObjectId(userId), 'products.item': new ObjectId(productId) },
-                    { $set: { 'products.$.quantity': finalQuantity } }
-                );
-
-                if (result.modifiedCount > 0) {
-                    res.status(200).json({ message: 'Product quantity updated successfully' });
-                } else {
-                    res.status(404).json({ error: 'Cart item must be minimum' });
-                }
-            } catch (error) {
-                console.error('Error updating product quantity:', error);
-                res.status(500).json({ error: 'Internal Server Error' });
+            if (!productToUpdate) {
+                return res.status(404).json({ error: 'Product not found in cart item' });
             }
-        });
+
+            const newQuantity = productToUpdate.quantity + intChange;
+
+            // Ensure the new quantity doesn't go below 1
+            const finalQuantity = Math.max(1, newQuantity);
+
+            // Update the cart item quantity in the database
+            const result = await db.get().collection(collection.cartCollection).updateOne(
+                { user: new ObjectId(userId), 'products.item': new ObjectId(productId) },
+                { $set: { 'products.$.quantity': finalQuantity } }
+            );
+
+            if (result.modifiedCount > 0) {
+                res.status(200).json({ message: 'Product quantity updated successfully' });
+            } else {
+                res.status(404).json({ error: 'Cart item must be minimum' });
+            }
+        } catch (error) {
+            console.error('Error updating product quantity:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+
     } catch (error) {
         console.error('Error verifying JWT token:', error);
         res.status(500).json({ error: 'Internal Server Error' });
@@ -509,7 +474,7 @@ exports.changeProductQuantity = async (req, res) => {
 };
 exports.deletecartoneitem = async (req, res) => {
     const details = req.body;
-
+    console.log(details);
     try {
         const response = await db.get().collection(collection.cartCollection)
             .updateOne(
@@ -528,41 +493,34 @@ exports.deletecartoneitem = async (req, res) => {
     }
 };
 exports.postRequestAddMoney = async (req, res) => {
-    const token = req.cookies.token;
     const status = 'rejected';
-    jwt.verify(token, jwtsecret, async (err, decoded) => {
-        if (err) {
-            // Handle token verification error
-            console.error('Token verification error:', err);
-            return res.status(401).json({ error: 'Unauthorized' });
-        }
-        const userId = decoded.id;
-        const amount = req.body.amount;
 
-        // Check if amount is not empty
-        if (!amount || amount.trim() === "") {
-            return res.status(400).json({ error: 'Amount is required' });
-        }
+    const userId = req.body.id;
+    const amount = req.body.amount;
 
-        const order = {
-            userId: new ObjectId(userId),
-            amount: amount,
-            status: status,
-            type: 'Deposit',
-            date: new Date(),
-        };
+    // Check if amount is not empty
+    if (!amount || amount.trim() === "") {
+        return res.status(400).json({ error: 'Amount is required' });
+    }
 
-        try {
-            const response = await db.get().collection(collection.orderedCollection).insertOne(order);
+    const order = {
+        userId: new ObjectId(userId),
+        amount: amount,
+        status: status,
+        type: 'Deposit',
+        date: new Date(),
+    };
 
-            // Call generateRazorpay function here
-            await generateRazorpay(res, response.insertedId, amount);
+    try {
+        const response = await db.get().collection(collection.orderedCollection).insertOne(order);
 
-        } catch (error) {
-            console.error('Error inserting order:', error);
-            res.status(500).json({ error: 'Internal Server Error' });
-        }
-    });
+        // Call generateRazorpay function here
+        await generateRazorpay(res, response.insertedId, amount);
+
+    } catch (error) {
+        console.error('Error inserting order:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
 };
 
 const generateRazorpay = (res, orderId, amount) => {
@@ -634,33 +592,27 @@ exports.verifyPayment = async (req, res) => {
 };
 exports.withdrawRequest = async (req, res) => {
     try {
-        const token = req.cookies.token;
-        jwt.verify(token, jwtsecret, async (err, decoded) => {
-            if (err) {
-                throw err;
-            } else {
-                userId = decoded.id
-                amount = req.body.amount
-                request = 'pending'
-                const currentDate = new Date();
-                const formattedDate = currentDate.toISOString();
-                let withdraw = {
-                    userId: userId,
-                    amount: parseInt(amount),
-                    request: request,
-                    username: decoded.email,
-                    type: 'Withdrawn Request',
-                    date: formattedDate,
+        userId = req.body.id
+        amount = req.body.amount
+        request = 'pending'
+        const currentDate = new Date();
+        const formattedDate = currentDate.toISOString();
+        let withdraw = {
+            userId: userId,
+            amount: parseInt(amount),
+            request: request,
+            username: req.body.username,
+            type: 'Withdrawn Request',
+            date: formattedDate,
 
-                }
-                const withs = db.get().collection(collection.withdrawRequestCollection).insertOne(withdraw)
-                if (withs) {
-                    res.status(200).json({ result: withs.insertedId })
-                } else {
-                    res.status(400).json({ result: 'Payment request not accepted, Please check after sometime' })
-                }
-            }
-        })
+        }
+        const withs = db.get().collection(collection.withdrawRequestCollection).insertOne(withdraw)
+        if (withs) {
+            res.status(200).json({ result: withs.insertedId })
+        } else {
+            res.status(400).json({ result: 'Payment request not accepted, Please check after sometime' })
+        }
+
     } catch (error) {
         console.error('Error in verifyPayment:', error);
         res.status(500).json({ status: 'Internal server error' });
@@ -668,40 +620,32 @@ exports.withdrawRequest = async (req, res) => {
 };
 exports.userTransactions = async (req, res) => {
     try {
-        const token = req.cookies.token;
-        if (!token) {
-            return res.status(400).json({ error: 'JWT token is not present' });
-        }
 
-        jwt.verify(token, jwtsecret, async (err, decoded) => {
-            if (err) {
-                throw err;
-            } else {
-                const userId = decoded.id;
+        const { id } = req.params;
+        const userId = id;
 
-                const deposit = await db.get().collection(collection.orderedCollection).find({ userId: new ObjectId(userId) }).toArray();
-                const deposited = await db.get().collection(collection.depositCollection).find({ userId: new ObjectId(userId) }).toArray();
-                const withdrawRequest = await db.get().collection(collection.withdrawRequestCollection).find({ userId: userId }).toArray();
-                const accepted = await db.get().collection(collection.transactionCollection).find({ userId: userId }).toArray();
-                const purchased = await db.get().collection(collection.purchasedCollection).find({ userId: userId }).toArray();
-                const allTransactions = [...deposit, ...withdrawRequest, ...accepted, ...deposited, ...purchased];
+        const deposit = await db.get().collection(collection.orderedCollection).find({ userId: new ObjectId(userId) }).toArray();
+        const deposited = await db.get().collection(collection.depositCollection).find({ userId: new ObjectId(userId) }).toArray();
+        const withdrawRequest = await db.get().collection(collection.withdrawRequestCollection).find({ userId: userId }).toArray();
+        const accepted = await db.get().collection(collection.transactionCollection).find({ userId: userId }).toArray();
+        const purchased = await db.get().collection(collection.purchasedCollection).find({ userId: userId }).toArray();
+        const allTransactions = [...deposit, ...withdrawRequest, ...accepted, ...deposited, ...purchased];
 
-                const totalDepositedAmount = deposited.reduce((total, transaction) => {
-                    return total + parseFloat(transaction.amount);
-                }, 0);
-                const totalWithdrawRequestAmount = withdrawRequest.reduce((total, transaction) => {
-                    return total + parseFloat(transaction.amount);
-                }, 0);
-                const totalacceptedAmount = accepted.reduce((total, transaction) => {
-                    return total + parseFloat(transaction.amount);
-                }, 0);
-                const totalpurchasedAmount = purchased.reduce((total, transaction) => {
-                    return total + parseFloat(transaction.totalPrice);
-                }, 0);
-                const balance = totalDepositedAmount - totalWithdrawRequestAmount - totalacceptedAmount - totalpurchasedAmount;
-                res.status(200).json({ transactions: allTransactions, balance });
-            }
-        });
+        const totalDepositedAmount = deposited.reduce((total, transaction) => {
+            return total + parseFloat(transaction.amount);
+        }, 0);
+        const totalWithdrawRequestAmount = withdrawRequest.reduce((total, transaction) => {
+            return total + parseFloat(transaction.amount);
+        }, 0);
+        const totalacceptedAmount = accepted.reduce((total, transaction) => {
+            return total + parseFloat(transaction.amount);
+        }, 0);
+        const totalpurchasedAmount = purchased.reduce((total, transaction) => {
+            return total + parseFloat(transaction.totalPrice);
+        }, 0);
+        const balance = totalDepositedAmount - totalWithdrawRequestAmount - totalacceptedAmount - totalpurchasedAmount;
+        res.status(200).json({ transactions: allTransactions, balance });
+
     } catch (error) {
         console.error('Error in', error);
         res.status(500).json({ status: 'Internal server error' });
@@ -711,122 +655,111 @@ exports.userTransactions = async (req, res) => {
 
 exports.purchase = async (req, res) => {
     try {
-        const token = req.cookies.token;
-        jwt.verify(token, jwtsecret, async (err, decoded) => {
-            if (err) {
-                throw err;
-            }
-            else {
-                const userId = decoded.id;
-                const data = req.body;
-                const itemsIds = data.itemIds.map(itemId => new ObjectId(itemId));
-                const currentDate = new Date();
-                const details = {
-                    userId: userId,
-                    totalPrice: parseFloat(data.totalPrice),
-                    items: data.items,
-                    date: currentDate,
-                    status: 'done',
-                    type: 'purchased',
-                };
 
-                const deleteCartOrder = await db.get().collection(collection.cartCollection).deleteMany({ _id: { $in: itemsIds } });
-                if (deleteCartOrder.deletedCount > 0) {
-                    const insertResult = await db.get().collection(collection.purchasedCollection).insertOne(details);
-                    if (insertResult.insertedId) {
-                        res.status(200).json({ status: 'success purchase' });
-                    } else {
-                        res.status(500).json({ status: 'Failed to insert purchase details' });
-                    }
-                }
+        const userId = req.body.id;
+        const data = req.body;
+        const itemsIds = data.itemIds.map(itemId => new ObjectId(itemId));
+        const currentDate = new Date();
+        const details = {
+            userId: userId,
+            totalPrice: parseFloat(data.totalPrice),
+            items: data.items,
+            date: currentDate,
+            status: 'done',
+            type: 'purchased',
+        };
 
+        const deleteCartOrder = await db.get().collection(collection.cartCollection).deleteMany({ _id: { $in: itemsIds } });
+        if (deleteCartOrder.deletedCount > 0) {
+            const insertResult = await db.get().collection(collection.purchasedCollection).insertOne(details);
+            if (insertResult.insertedId) {
+                res.status(200).json({ status: 'success purchase' });
+            } else {
+                res.status(500).json({ status: 'Failed to insert purchase details' });
             }
-        });
-    } catch (error) {
+        }
+
+    }
+    catch (error) {
         console.error('Error in purchase:', error);
         res.status(500).json({ status: 'Internal server error' });
     }
 };
 
 exports.portfolioValue = async (req, res) => {
-    const token = req.cookies.token;
-    jwt.verify(token, jwtsecret, async (err, decoded) => {
-        if (err) {
-            res.status(500).json({ error: "Failed to verify token" });
-        } else {
-            const userId = decoded.id;
-            const purchases = await db.get().collection(collection.purchasedCollection)
-                .find({ userId: userId })
-                .toArray();
 
-            let productsInfo = [];
-            let totalProfit = 0;
-            let profitRecords = [];
+    const userId = req.body.id;
+    const purchases = await db.get().collection(collection.purchasedCollection)
+        .find({ userId: userId })
+        .toArray();
 
-            for (const purchase of purchases) {
-                const purchaseDate = purchase.date;
+    let productsInfo = [];
+    let totalProfit = 0;
+    let profitRecords = [];
 
-                for (const item of purchase.items) {
-                    const product = await db.get().collection(collection.tradeCollection)
-                        .findOne({ _id: new ObjectId(item.productId) });
-                    if (product) { // Check if product exists
-                        const singleShare = product.price / parseInt(product.shares);
-                        const investmentAmount = singleShare * item.quantity;
-                        const profitRecord = await db.get().collection(collection.profitCollection).findOne({
-                            productId: item.productId
-                        });
-                        let singleShareProfit = 0;
-                        if (profitRecord) {
-                            const totalTradeProfit = parseInt(profitRecord.tradeProfit);
-                            singleShareProfit = totalTradeProfit / parseInt(product.shares);
-                            profitRecords.push({
-                                createdAt: profitRecord.createdAt,
-                                productId: item.productId,
-                                quantity: item.quantity,
-                                totalProfit: singleShareProfit * item.quantity,
-                                trade: product.trade,
-                                investmentAmount: investmentAmount,
-                                returnProfitPercentage: (profitRecord.tradeProfit / product.price) * 100
-                            });
-                        }
+    for (const purchase of purchases) {
+        const purchaseDate = purchase.date;
 
-                        const itemProfit = singleShareProfit * item.quantity;
-
-                        totalProfit += itemProfit;
-
-                        productsInfo.push({
-                            date: purchaseDate,
-                            productId: item.productId,
-                            quantity: item.quantity,
-                            productName: product.trade,
-                            productPrice: product.price,
-                            returnPercentage: product.returnPercentage,
-                            investmentAmount: investmentAmount,
-                            profit: itemProfit
-                        });
-                    }
+        for (const item of purchase.items) {
+            const product = await db.get().collection(collection.tradeCollection)
+                .findOne({ _id: new ObjectId(item.productId) });
+            if (product) { // Check if product exists
+                const singleShare = product.price / parseInt(product.shares);
+                const investmentAmount = singleShare * item.quantity;
+                const profitRecord = await db.get().collection(collection.profitCollection).findOne({
+                    productId: item.productId
+                });
+                let singleShareProfit = 0;
+                if (profitRecord) {
+                    const totalTradeProfit = parseInt(profitRecord.tradeProfit);
+                    singleShareProfit = totalTradeProfit / parseInt(product.shares);
+                    profitRecords.push({
+                        createdAt: profitRecord.createdAt,
+                        productId: item.productId,
+                        quantity: item.quantity,
+                        totalProfit: singleShareProfit * item.quantity,
+                        trade: product.trade,
+                        investmentAmount: investmentAmount,
+                        returnProfitPercentage: (profitRecord.tradeProfit / product.price) * 100
+                    });
                 }
+
+                const itemProfit = singleShareProfit * item.quantity;
+
+                totalProfit += itemProfit;
+
+                productsInfo.push({
+                    date: purchaseDate,
+                    productId: item.productId,
+                    quantity: item.quantity,
+                    productName: product.trade,
+                    productPrice: product.price,
+                    returnPercentage: product.returnPercentage,
+                    investmentAmount: investmentAmount,
+                    profit: itemProfit
+                });
             }
-
-            const countTotalPurchases = (productsInfo) => {
-                return productsInfo.length;
-            };
-
-            const calculateTotalSpent = (purchases) => {
-                return purchases.reduce((total, purchase) => total + purchase.totalPrice, 0);
-            };
-            const totalSpent = calculateTotalSpent(purchases) + totalProfit;
-
-            profitRecords.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-            productsInfo.sort((a, b) => new Date(b.date) - new Date(a.date));
-            res.status(200).json({
-                countTotalPurchases: countTotalPurchases(productsInfo),
-                totalSpent,
-                productsInfo,
-                profitRecords
-            });
         }
+    }
+
+    const countTotalPurchases = (productsInfo) => {
+        return productsInfo.length;
+    };
+
+    const calculateTotalSpent = (purchases) => {
+        return purchases.reduce((total, purchase) => total + purchase.totalPrice, 0);
+    };
+    const totalSpent = calculateTotalSpent(purchases) + totalProfit;
+
+    profitRecords.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    productsInfo.sort((a, b) => new Date(b.date) - new Date(a.date));
+    res.status(200).json({
+        countTotalPurchases: countTotalPurchases(productsInfo),
+        totalSpent,
+        productsInfo,
+        profitRecords
     });
+
 };
 
 

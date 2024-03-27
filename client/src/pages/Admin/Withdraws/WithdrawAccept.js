@@ -1,17 +1,18 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { ToastContainer, toast } from 'react-toastify';
 import { Link, useNavigate } from 'react-router-dom';
 import { acceptWithdrawal, deleteWithdrawal, getWithdrwalRequest, userRole } from '../../../services/Apis';
+import { UserContext } from '../../userContext/Usercontext';
 function WithdrawAccept() {
     const [withdraw, setWithdraw] = useState();
     const navigate = useNavigate();
+    const { userData } = useContext(UserContext);
 
     useEffect(() => {
         // Check if the user is an admin before fetching trades data
         const checkUserRole = async () => {
             try {
-                const response = await userRole();
-                if (response.data.role !== "admin") {
+                if (userData.role !== "admin") {
                     navigate('/');
                 } else {
                     fetchData();

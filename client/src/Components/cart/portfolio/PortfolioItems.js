@@ -1,13 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import './Portfolioitems.css';
 import { Table } from 'react-bootstrap';
 import { portfolioValue } from '../../../services/Apis';
+import { UserContext } from '../../../pages/userContext/Usercontext';
 
 function PortfolioItems() {
     const [portFolio, setPortfolio] = useState();
     const [portFolioCount, setPortfolioCount] = useState();
     const [tradeInfo, setTradeInfo] = useState([]);
     const [profitInfo, setProfitInfo] = useState([]);
+    const { userData } = useContext(UserContext);
+
 
 
     useEffect(() => {
@@ -16,7 +19,10 @@ function PortfolioItems() {
 
     const fetchPortfolioData = async () => {
         try {
-            const response = await portfolioValue();
+            const data = {
+                id: userData.id
+            }
+            const response = await portfolioValue(data);
             if (response.status === 200) {
                 setPortfolio(response.data.totalSpent);
                 setPortfolioCount(response.data.countTotalPurchases);

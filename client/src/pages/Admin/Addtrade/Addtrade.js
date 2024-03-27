@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import { postTradeDetails, userRole } from '../../../services/Apis';
+import { UserContext } from '../../userContext/Usercontext';
 
 function Addtrade() {
     const [locationfrom, setLocationfrom] = useState()
@@ -19,6 +20,8 @@ function Addtrade() {
     const [sharesAvailable, setSharesAvailable] = useState()
     const navigate = useNavigate();
     const [images, setImages] = useState([null, null, null, null, null]);
+    const { userData } = useContext(UserContext);
+
     // Image size limit in kilobytes (KB)
     const imageSizeLimitKB = 200;
 
@@ -105,8 +108,7 @@ function Addtrade() {
     useEffect(() => {
         async function fetchRole() {
             try {
-                const response = await userRole();
-                if (response.status === 200 && response.data.role === 'admin') {
+                if (userData.role === 'admin') {
 
                 } else {
                     navigate('/');
@@ -117,7 +119,7 @@ function Addtrade() {
             }
         }
         fetchRole();
-    }, [navigate]);
+    }, []);
 
 
 

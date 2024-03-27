@@ -1,27 +1,11 @@
 // VerifyBar.js
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import './verifybar.css';
 import { useRole } from '../../pages/userContext/RoleContext';
-import { userRole } from '../../services/Apis';
 
 function VerifyBar() {
-    const { role, setRole } = useRole();
-
-    useEffect(() => {
-        fetchData();
-    }, []);
-
-    const fetchData = async () => {
-        try {
-            const response = await userRole();
-            if (response.status === 200) {
-                setRole(response.data.role);
-            }
-        } catch (error) {
-            console.error('Error fetching user role:', error);
-        }
-    };
+    const { role } = useRole();
 
     if (role === 'verified') {
         return null;

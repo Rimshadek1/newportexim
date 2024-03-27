@@ -29,7 +29,7 @@ const Login = () => {
 
             try {
                 const response = await userVerify(data);
-                localStorage.setItem('jwtToken', response.data.token);
+                localStorage.setItem('authToken', response.data.token);
                 setSpinner(false);
                 if (response.data.role === 'admin') {
                     navigate("/admindash");

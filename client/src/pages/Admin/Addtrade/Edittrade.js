@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-import { viewTradesEdit, updateTradeDetails, userRole } from "../../../services/Apis";
+import { viewTradesEdit, updateTradeDetails } from "../../../services/Apis";
+import { UserContext } from "../../userContext/Usercontext";
 
 function Edittrade() {
     const { id } = useParams();
+    const { userData } = useContext(UserContext);
+
     const [values, setValues] = useState({
         locationfrom: "",
         locationto: "",
@@ -26,9 +29,8 @@ function Edittrade() {
     useEffect(() => {
         const fetchRoleAndData = async () => {
             try {
-                const roleResponse = await userRole();
 
-                if (roleResponse.status === 200 && roleResponse.data.role === 'admin') {
+                if (userData.role === 'admin') {
                     const response = await viewTradesEdit(id);
 
                     if (response.status === 200) {

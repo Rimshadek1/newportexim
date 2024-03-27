@@ -1,35 +1,28 @@
-import axios from "axios";
 import { createContext, useEffect, useState } from "react";
 import PropTypes from 'prop-types';
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from 'jwt-decode';
 export const UserContext = createContext({});
 
 export function UserContextProvider({ children }) {
-    const authToken = "webdyubdybboxsbjoB643";
-    const [username, setLoggedInUsername] = useState(null);
-    const [id, setId] = useState(null);
+    const authToken = localStorage.getItem('authToken');
+    const [userData, setUserData] = useState(null);
     const navigate = useNavigate();
-
     useEffect(() => {
-        axios.get(`/profile`, {
-            headers: {
-                Authorization: `Bearer ${authToken}`,
-            },
-            withCredentials: true,
-        }).then(response => {
-            if (response.data) {
-                setId(response.data.userData.id);
-                setLoggedInUsername(response.data.userData.email);
-            } else {
+        if (authToken) {
+            try {
+                const decodedToken = jwtDecode(authToken);
+                setUserData(decodedToken);
+            } catch (error) {
+                console.error('Error decoding JWT token:', error);
                 navigate('/');
             }
-        }).catch(error => {
+        } else {
             navigate('/');
-        });
-    }, []);
-
+        }
+    }, [authToken, navigate]);
     return (
-        <UserContext.Provider value={{ username, setLoggedInUsername, id, setId }}>
+        <UserContext.Provider value={{ userData }}>
             {children}
         </UserContext.Provider>
     );

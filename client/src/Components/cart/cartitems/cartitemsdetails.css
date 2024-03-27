@@ -183,6 +183,11 @@
     display: none;
 }
 
+
+
+
+
+
 @media (max-width: 768px) {
     .fullcartitemdetail {
         margin-left: 0%;
@@ -292,9 +297,6 @@
         margin-left: -20%;
     }
 
-    /* .first img {
-        display: none;
-    } */
 
     .second p {
         font-size: 4vw;
@@ -304,13 +306,10 @@
     .fundedicon {
         margin-top: 30px;
         margin-left: 42%;
-        /* width: 150px; */
     }
 
 
-    /* .first {
-        display: none;
-    } */
+
 
     .removecart {
         margin-top: 10px;
