@@ -56,6 +56,10 @@ function Propertiesview() {
         }
 
     }
+    const calculateFundedPercentage = (item) => {
+        const percentage = item.shares !== 0 ? ((item.shares - item.sharesavailable) / item.shares) * 100 : 0;
+        return percentage.toFixed(2);
+    };
     return (
         <div className="fullview">
             <div className="toptexts">
@@ -68,7 +72,6 @@ function Propertiesview() {
                     className="img1"
                     alt="picute"
                     onClick={() => openLightbox('img/portfolio-1.jpg')}
-                    style={{ width: '32vw', height: '32vw' }}
                 />
 
                 <div className="img23">
@@ -77,7 +80,6 @@ function Propertiesview() {
                         className="img2"
                         alt="picute"
                         onClick={() => openLightbox('img/portfolio-2.jpg')}
-                        style={{ width: '20vw', height: '15vw' }}
                     />
 
                     <img
@@ -85,7 +87,6 @@ function Propertiesview() {
                         className="img3"
                         alt="picute"
                         onClick={() => openLightbox('img/portfolio-3.jpg')}
-                        style={{ width: '20vw', height: '15vw' }}
                     />
 
                 </div>
@@ -95,7 +96,6 @@ function Propertiesview() {
                         className="img2"
                         alt="picute"
                         onClick={() => openLightbox('img/portfolio-2.jpg')}
-                        style={{ width: '20vw', height: '15vw' }}
                     />
 
                     <img
@@ -103,7 +103,6 @@ function Propertiesview() {
                         className="img3"
                         alt="picute"
                         onClick={() => openLightbox('img/portfolio-3.jpg')}
-                        style={{ width: '20vw', height: '15vw' }}
                     />
 
                 </div>
@@ -121,13 +120,7 @@ function Propertiesview() {
                             <p>A mature trade market with a high return on investment</p>
 
                         </div>
-                        {/* <div className="secfirst2">
-                            <span className='flags'>  <i class="fa-solid fa-chart-simple"></i>
-                                <span className='flagss'>7.21% annual gross yield</span>
-                            </span>
-                            <p>With a net yield of 5.46% and a price per square foot of RS 2,692</p>
 
-                        </div> */}
                     </div>
                     <div className="secsecond">
                         <h3>Trade Overview</h3>
@@ -173,8 +166,7 @@ function Propertiesview() {
                     <div className="tradeprice">
                         <p className='trade'>Trade price</p>
                         <h2>RS <span className='price'>{trade.price}</span></h2>
-
-                        <Progressproperties bgcolor="#ff3c00" progress="65" height="10px" width='20vw' left='50%' />
+                        <Progressproperties bgcolor="#ff3c00" progress={calculateFundedPercentage(trade)} height="10px" width='20vw' left='50%' />
                         <p className='text-danger clock'><i class="fa-regular fa-clock"></i> {remainingDays} days left</p>
                     </div>
                     <div className="detailsoftrade">
@@ -186,7 +178,7 @@ function Propertiesview() {
                         </div>
                     </div>
                     <span className='inputcart'>
-                        <div className="alldiv">
+                        {/* <div className="alldiv">
                             <div className="indianflag">
                                 <CountryFlag className="flag-lg" countryCode="IN" svg />
 
@@ -194,7 +186,7 @@ function Propertiesview() {
                             <p>RS</p>
                             <input type="text" placeholder='Enter amount' />
 
-                        </div>
+                        </div> */}
                         <button onClick={handleAddCart}>Add to cart</button>
                     </span>
                 </div>

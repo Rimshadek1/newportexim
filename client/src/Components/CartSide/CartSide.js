@@ -8,7 +8,7 @@ function CartSide() {
                 <ul className="navbar-items flexbox-col">
                     <li className="navbar-logo flexbox-left">
                         <Link to='/home' className="navbar-item-inner flexbox">
-                            <img src="img/portexim.png" style={{ height: '25px' }} alt="portexim logo" />
+                            <img src="img/portexim.png" style={{ height: '25px' }} alt="porteximlogo" />
                         </Link>
                     </li>
                     <li className="navbar-item flexbox-left">

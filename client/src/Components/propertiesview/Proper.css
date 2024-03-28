@@ -28,19 +28,21 @@
 }
 
 .img1 {
-    height: 30.3vw;
+    width: 34vw;
+    height: 32vw;
     border-radius: 10px;
 }
 
 .img2 {
-    height: 14.3vw;
+    height: 15vw;
     border-radius: 10px;
+    width: 20vw;
 }
 
 .img3 {
-    height: 14.3vw;
-    margin-top: 9%;
+    height: 15vw;
     border-radius: 10px;
+    width: 20vw;
 }
 
 .img23 {
@@ -195,8 +197,9 @@
 }
 
 .description {
-    font-size: 16px;
+    /* font-size: 16px; */
     font-size: .9vw;
+    width: 90%;
 }
 
 .tradeprice {
@@ -323,18 +326,27 @@
         width: 100%;
     }
 
+    .toptexts p {
+        font-size: 5vw;
+        font-weight: 700;
+    }
+
     .img1 {
-        height: 37.3vw;
+        width: 37vw;
+        height: 36vw;
         border-radius: 10px;
+
     }
 
     .img2 {
-        height: 17.6vw;
+        width: 26vw;
+        height: 17vw;
         border-radius: 10px;
     }
 
     .img3 {
-        height: 17.6vw;
+        width: 26vw;
+        height: 17vw;
         border-radius: 10px;
     }
 
@@ -457,5 +469,12 @@
         border-radius: 10px;
         border-color: rgb(255, 255, 255);
         height: 6vw;
+    }
+
+    .detailsoftrade1 p {
+        font-size: 3vw;
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
     }
 }
