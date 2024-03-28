@@ -19,6 +19,7 @@ function Admindash() {
             try {
                 if (userData.role !== "admin") {
                     navigate('/');
+                    console.log(userData.role);
                 } else {
                     fetchData();
                 }
@@ -113,6 +114,7 @@ function Admindash() {
         try {
             const response = await Logout();
             if (response.status === 200) {
+                localStorage.clear();
                 navigate('/');
             } else {
                 toast.error('Logout not successful');

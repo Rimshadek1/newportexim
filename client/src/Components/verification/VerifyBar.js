@@ -1,15 +1,15 @@
 // VerifyBar.js
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import './verifybar.css';
-import { useRole } from '../../pages/userContext/RoleContext';
+import { UserContext } from '../../pages/userContext/Usercontext';
 
 function VerifyBar() {
-    const { role } = useRole();
+    const { userData } = useContext(UserContext);
 
-    if (role === 'verified') {
+    if (userData.role === 'verified') {
         return null;
-    } else if (role === 'unVerifiedUser' || role === undefined) {
+    } else if (userData.role === 'unVerifiedUser' || userData.role === undefined) {
         return (
             <div className='verifybar bg-danger'>
                 <div className="text-center veritext text-light">
@@ -22,7 +22,7 @@ function VerifyBar() {
                 </div>
             </div>
         );
-    } else if (role === 'verifying') {
+    } else if (userData.role === 'verifying') {
         return (
             <div className='verifybar bg-warning'>
                 <div className="text-center veritext text-light">

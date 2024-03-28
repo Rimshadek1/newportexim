@@ -58,8 +58,8 @@ function Verificaton() {
                 const response = await sentVerification(data);
                 if (response.status === 200) {
                     toast.success('Verification submitted successfully! Please log in again.');
-
-                    navigate('/home');
+                    localStorage.clear();
+                    navigate('/');
                 } else {
                     toast.error(response.response.data.error);
                 }

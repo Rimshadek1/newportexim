@@ -1,10 +1,11 @@
 // Login.js
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { NavLink, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import { userVerify } from "../services/Apis";
 import Spinner from 'react-bootstrap/Spinner';
 import "../styles/mixlogin.css";
+import { UserContext } from './userContext/Usercontext';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -12,6 +13,8 @@ const Login = () => {
     const [spinner, setSpinner] = useState(false);
     const navigate = useNavigate();
     const [passhow, setPassShow] = useState(false);
+    const { userData } = useContext(UserContext);
+
 
     const login = async (e) => {
         e.preventDefault();

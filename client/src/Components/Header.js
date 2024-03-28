@@ -10,13 +10,7 @@ function Header() {
 
     const handleNavCollapse = () => setIsNavCollapsed(!isNavCollapsed);
     const navigate = useNavigate();
-    function clearAllCookies() {
-        document.cookie.split(";").forEach((c) => {
-            document.cookie = c
-                .replace(/^ +/, "")
-                .replace(/=.*/, `=;expires=${new Date().toUTCString()};path=/`);
-        });
-    }
+
     const logout = async () => {
         try {
             // Clear cookies
@@ -24,6 +18,8 @@ function Header() {
             // Clear JWT token from local storage
             localStorage.removeItem('jwtToken');
             // Logout API call
+            localStorage.clear();
+
             const response = await Logout();
             if (response.status === 200) {
                 navigate('/');
@@ -61,7 +57,7 @@ function Header() {
                         <Link to="/booking" className="nav-item nav-link">Items to Export</Link>
                         <Link to="/about" className="nav-item nav-link">About</Link>
                         <Link to="/itemtoexport" className="nav-item nav-link">Cartitems</Link>
-                        <div onClick={logout} className="nav-item nav-link">Logout</div>
+                        <Link onClick={logout} className="nav-item nav-link">Logout</Link>
                     </div>
                 </div>
             </nav>
