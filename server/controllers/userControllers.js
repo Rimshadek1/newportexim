@@ -684,11 +684,13 @@ exports.purchase = async (req, res) => {
 
 exports.portfolioValue = async (req, res) => {
 
-    const userId = req.body.id;
+    const { id } = req.params;
+    const userId = id;
     const purchases = await db.get().collection(collection.purchasedCollection)
-        .find({ userId: userId })
+        .find({
+            userId: userId
+        })
         .toArray();
-
     let productsInfo = [];
     let totalProfit = 0;
     let profitRecords = [];
@@ -699,7 +701,7 @@ exports.portfolioValue = async (req, res) => {
         for (const item of purchase.items) {
             const product = await db.get().collection(collection.tradeCollection)
                 .findOne({ _id: new ObjectId(item.productId) });
-            if (product) { // Check if product exists
+            if (product) {
                 const singleShare = product.price / parseInt(product.shares);
                 const investmentAmount = singleShare * item.quantity;
                 const profitRecord = await db.get().collection(collection.profitCollection).findOne({

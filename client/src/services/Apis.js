@@ -45,8 +45,8 @@ export const userTransaction = async (id) => {
 export const purchase = async (data) => {
     return await commonrequest("POST", `/purchase`, data);
 }
-export const portfolioValue = async (data) => {
-    return await commonrequest("GET", `/portfolioValue`, data);
+export const portfolioValue = async (id) => {
+    return await commonrequest("GET", `/portfolioValue/${id}`);
 }
 export const getTradeDetailsProfit = async (data) => {
     return await commonrequest("GET", `/getTradeDetailsProfit`, data);

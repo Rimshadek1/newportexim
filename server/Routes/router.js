@@ -22,7 +22,7 @@ router.post("/verifyPayment", controllers.verifyPayment);
 router.post("/withdrawRequest", controllers.withdrawRequest);
 router.get("/usertransaction/:id", controllers.userTransactions);
 router.post("/purchase", controllers.purchase);
-router.get("/portfolioValue", controllers.portfolioValue);
+router.get("/portfolioValue/:id", controllers.portfolioValue);
 router.get('/isVerified', controllers.isVeification)
 router.get('/', (req, res) => {
     res.json('backend setup done')

@@ -19,10 +19,8 @@ function PortfolioItems() {
 
     const fetchPortfolioData = async () => {
         try {
-            const data = {
-                id: userData.id
-            }
-            const response = await portfolioValue(data);
+
+            const response = await portfolioValue(userData.id);
             if (response.status === 200) {
                 setPortfolio(response.data.totalSpent);
                 setPortfolioCount(response.data.countTotalPurchases);
@@ -75,7 +73,6 @@ function PortfolioItems() {
                         </div>
                         <div className="amountdate">
                             <h5>₹ 0</h5>
-                            <p>Nov2023</p>
                         </div>
                     </div>
                     <div className="totalincome">
@@ -85,7 +82,6 @@ function PortfolioItems() {
                         </div>
                         <div className="amountdate">
                             <h5>₹ 0</h5>
-                            <p>As of nov 2023</p>
                         </div>
                     </div>
                     <div className="capitalappreciation">
@@ -95,7 +91,6 @@ function PortfolioItems() {
                         </div>
                         <div className="amountdate">
                             <h5>₹ 0</h5>
-                            <p>As of nov 2023</p>
                         </div>
                     </div>
                 </div>
