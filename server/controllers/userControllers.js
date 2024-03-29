@@ -302,62 +302,58 @@ exports.getTradeDetail = async (req, res) => {
 };
 exports.addToCart = async (req, res) => {
     try {
-        // Extract userId from cookies
-        const token = req.cookies.token;
-        jwt.verify(token, jwtsecret, (err, decoded) => {
-            const userId = decoded.id;
-            let proObj = {
-                item: new ObjectId(req.body.tradeId),
-                quantity: 1,
-            };
+        const userId = req.body.id;
+        let proObj = {
+            item: new ObjectId(req.body.tradeId),
+            quantity: 1,
+        };
 
-            return new Promise(async (resolve, reject) => {
-                try {
-                    const userCart = await db.get().collection(collection.cartCollection).findOne({ user: new ObjectId(userId) });
-                    if (userCart) {
-                        let proExist = userCart.products.findIndex(product => product.item.equals(new ObjectId(req.body.tradeId)));
-                        if (proExist !== -1) {
-                            db.get().collection(collection.cartCollection)
-                                .updateOne(
-                                    { user: new ObjectId(userId), 'products.item': new ObjectId(req.body.tradeId) },
-                                    {
-                                        $inc: { 'products.$.quantity': 1 },
-                                    }
-                                )
-                                .then(() => {
-                                    res.status(200).json({ status: 'Item added to cart successfully' });
-                                    resolve();
-                                });
-                        } else {
-                            // If user's cart already exists, add the new product id to the existing array
-                            db.get().collection(collection.cartCollection)
-                                .updateOne(
-                                    { user: new ObjectId(userId) },
-                                    { $push: { products: proObj } }
-                                )
-                                .then(() => {
-                                    res.status(200).json({ status: 'Item added to cart successfully' });
-                                    resolve();
-                                });
-                        }
-                    } else {
-                        // If user's cart doesn't exist, create a new cart object with a single array for products
-                        const cartObj = {
-                            user: new ObjectId(userId),
-                            products: [proObj]
-                        };
+        return new Promise(async (resolve, reject) => {
+            try {
+                const userCart = await db.get().collection(collection.cartCollection).findOne({ user: new ObjectId(userId) });
+                if (userCart) {
+                    let proExist = userCart.products.findIndex(product => product.item.equals(new ObjectId(req.body.tradeId)));
+                    if (proExist !== -1) {
                         db.get().collection(collection.cartCollection)
-                            .insertOne(cartObj)
+                            .updateOne(
+                                { user: new ObjectId(userId), 'products.item': new ObjectId(req.body.tradeId) },
+                                {
+                                    $inc: { 'products.$.quantity': 1 },
+                                }
+                            )
+                            .then(() => {
+                                res.status(200).json({ status: 'Item added to cart successfully' });
+                                resolve();
+                            });
+                    } else {
+                        // If user's cart already exists, add the new product id to the existing array
+                        db.get().collection(collection.cartCollection)
+                            .updateOne(
+                                { user: new ObjectId(userId) },
+                                { $push: { products: proObj } }
+                            )
                             .then(() => {
                                 res.status(200).json({ status: 'Item added to cart successfully' });
                                 resolve();
                             });
                     }
-                } catch (error) {
-                    res.status(500).json({ error: "Internal Server Error" });
-                    reject(error);
+                } else {
+                    // If user's cart doesn't exist, create a new cart object with a single array for products
+                    const cartObj = {
+                        user: new ObjectId(userId),
+                        products: [proObj]
+                    };
+                    db.get().collection(collection.cartCollection)
+                        .insertOne(cartObj)
+                        .then(() => {
+                            res.status(200).json({ status: 'Item added to cart successfully' });
+                            resolve();
+                        });
                 }
-            })
+            } catch (error) {
+                res.status(500).json({ error: "Internal Server Error" });
+                reject(error);
+            }
         })
     } catch (error) {
         console.error(error);

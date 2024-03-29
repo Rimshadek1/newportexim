@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import './Proper.css';
 import Lightbox from './Lightbox';
 import CountryFlag from 'react-country-flag';
@@ -6,10 +6,13 @@ import Progressproperties from './Progressproperties';
 import { addToCart, viewOnlyOneTrade } from '../../services/Apis';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
+import { UserContext } from '../../pages/userContext/Usercontext';
 
 
 function Propertiesview() {
     const [lightboxImage, setLightboxImage] = useState(null);
+    const { userData } = useContext(UserContext);
+
     const navigate = useNavigate();
     const currentDate = new Date();
     const openLightbox = (imageUrl) => {
@@ -45,7 +48,8 @@ function Propertiesview() {
     const handleAddCart = async (e) => {
         e.preventDefault();
         const data = {
-            tradeId: id
+            tradeId: id,
+            id: userData.id
         }
         const response = await addToCart(data);
         if (response.status === 200) {
