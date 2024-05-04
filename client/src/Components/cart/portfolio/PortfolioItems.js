@@ -58,7 +58,7 @@ function PortfolioItems() {
             <div className="portfoliovalue">
                 <div className="values">
                     <p>Portfolio value</p>
-                    <h3> ₹  {portFolio}</h3>
+                    <h3> ₹  {portFolio.toFixed(2)}</h3>
                 </div>
             </div>
 
@@ -161,7 +161,7 @@ function PortfolioItems() {
                                     <td>{new Date(trade.createdAt).toLocaleDateString()}</td>
                                     <td style={{
                                         color: getAmountColor(trade),
-                                    }}> {trade.returnProfitPercentage.toFixed(2)} %</td>
+                                    }}> <strong>{trade.returnProfitPercentage.toFixed(2)} %</strong></td>
                                 </tr>
                             ))}
 
