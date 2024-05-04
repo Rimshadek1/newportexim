@@ -58,7 +58,7 @@ function PortfolioItems() {
             <div className="portfoliovalue">
                 <div className="values">
                     <p>Portfolio value</p>
-                    <h3> ₹  {portFolio.toFixed(2)}</h3>
+                    <h3> ₹ {portFolio && portFolio.toFixed(2)}</h3>
                 </div>
             </div>
 
