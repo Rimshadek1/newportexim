@@ -664,17 +664,32 @@ exports.purchase = async (req, res) => {
             status: 'done',
             type: 'purchased',
         };
+        const productId = details.items[0].productId; // Assuming there's only one item in the purchase
+        const tradeDetails = await db.get().collection(collection.tradeCollection).findOne({ _id: new ObjectId(productId) });
 
-        const deleteCartOrder = await db.get().collection(collection.cartCollection).deleteMany({ _id: { $in: itemsIds } });
-        if (deleteCartOrder.deletedCount > 0) {
-            const insertResult = await db.get().collection(collection.purchasedCollection).insertOne(details);
-            if (insertResult.insertedId) {
-                res.status(200).json({ status: 'success purchase' });
-            } else {
-                res.status(500).json({ status: 'Failed to insert purchase details' });
+        if (tradeDetails) {
+            const deleteCartOrder = await db.get().collection(collection.cartCollection).deleteMany({ _id: { $in: itemsIds } });
+            if (deleteCartOrder.deletedCount > 0) {
+                const insertResult = await db.get().collection(collection.purchasedCollection).insertOne(details);
+                if (insertResult.insertedId) {
+                    const purchasedQuantity = details.items.reduce((total, item) => total + item.quantity, 0);
+                    console.log(purchasedQuantity);
+                    const updatedSharesAvailable = tradeDetails.sharesavailable - purchasedQuantity;
+                    const productId = details.items[0].productId;
+                    await db.get().collection(collection.tradeCollection).updateOne(
+                        { _id: new ObjectId(productId) },
+                        {
+                            $set: { sharesavailable: updatedSharesAvailable }
+                        }
+                    );
+                    res.status(200).json({ status: 'success purchase' });
+                } else {
+                    res.status(500).json({ status: 'Failed to insert purchase details' });
+                }
             }
+        } else {
+            res.status(404).json({ status: 'Trade details not found for the given productId' });
         }
-
     }
     catch (error) {
         console.error('Error in purchase:', error);

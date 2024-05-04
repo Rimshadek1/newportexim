@@ -44,10 +44,10 @@ function Homesecond() {
                         to source the best trade items with the highest investment potential for you.</p>
                 </div>
                 <div className="searchbar"><i className="fa-solid fa-magnifying-glass"></i></div>
-                {activeTab === 'browse' && <img src="img/browse.png" alt="howitsworksimg" />}
-                {activeTab === 'purchase' && <img src="img/browse1.png" alt="howitsworksimg" />}
-                {activeTab === 'own' && <img src="img/browse2.png" alt="howitsworksimg" />}
-                {activeTab === 'exit' && <img src="img/browse3.png" alt="howitsworksimg" />}
+                {activeTab === 'browse' && <img src="img/1.png" alt="howitsworksimg" style={{ maxWidth: '67%', maxHeight: '65%', marginLeft: '18%' }} />}
+                {activeTab === 'purchase' && <img src="img/browse1.png" alt="howitsworksimg" style={{ maxWidth: '67%', maxHeight: '65%', marginLeft: '18%' }} />}
+                {activeTab === 'own' && <img src="img/3.png" alt="howitsworksimg" style={{ maxWidth: '67%', maxHeight: '65%', marginLeft: '18%' }} />}
+                {activeTab === 'exit' && <img src="img/4.png" alt="howitsworksimg" style={{ maxWidth: '67%', maxHeight: '65%', marginLeft: '18%' }} />}
             </div>
         </div>
     );

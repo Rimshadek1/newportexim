@@ -145,7 +145,6 @@ function Cartitemsdetails() {
                         cart.map((item, index) => (
                             <div className="cartitem" key={index}>
                                 <div className="first">
-                                    {/* Add your image source here */}
                                     <img src={item.product.image1 ? `data:image;base64,${item.product.image1.toString('base64')}` : ''} alt="tradeitem" />
                                     <button onClick={() => handleDeleteOnetrade(item._id, item.product._id)}>Remove</button>
                                 </div>
