@@ -155,7 +155,7 @@ function PortfolioItems() {
                                     <td
                                         style={{
                                             color: getAmountColorProfit(trade),
-                                        }}>{trade.totalProfit}</td>
+                                        }}>{trade.totalProfit.toFixed(1)}</td>
                                     <td>{trade.quantity}</td>
                                     <td>{trade.investmentAmount}</td>
                                     <td>{new Date(trade.createdAt).toLocaleDateString()}</td>
